@@ -5,15 +5,15 @@
 
 int main(int argc, char *argv[]){
 
-	KinectController my_controller(4,4);
-  	std::cout << "HELLO THERE IAM TRYING TO BE HERE! 1" << std::endl;
-  	my_controller.print_dimensions();
+	// KinectController my_controller(4,4);
+ //  	std::cout << "HELLO THERE IAM TRYING TO BE HERE! 1" << std::endl;
+ //  	my_controller.print_dimensions();
 
-  	my_controller.startDevice();
-    // QApplication a(argc, argv);
-    // MainWindow w;
-    // w.show();
-    // return a.exec();
-    return 0;
+  	// my_controller.startDevice();
+    QApplication a(argc, argv);
+    MainWindow w;
+    w.show();
+    return a.exec();
+    // return 0;
 
 }

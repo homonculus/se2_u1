@@ -1,11 +1,11 @@
-#include "memory.h"
+#include "memory_controller.h"
 #include <iostream>
 #define S  "*****************************************\n"
 
 using namespace std;
 
-Memory make3x3Game(){
-	Memory m = Memory();
+MemoryController make3x3Game(){
+	MemoryController m = MemoryController();
 	m.testing = true;
 	m.setDimensions(3,3);
 	m.setContentPath("./content.csv");
@@ -13,14 +13,14 @@ Memory make3x3Game(){
 	return m;
 }
 
-void doGameMove(int team,int selection, Memory m){
+void doGameMove(int team,int selection, MemoryController m){
 	MemoryEvent e0 = {team,selection};
 	m.gameEvent(e0);
 }
 
 bool testIsValid_doubleSelection(){
 	cout << S << "TESTING : double selection in one turn\n";
-	Memory m = make3x3Game();
+	MemoryController m = make3x3Game();
 	doGameMove(0,0,m);
 	doGameMove(0,0,m);
 	bool t1 = (m.getGameStatusFlag() == GE_INVALID);
@@ -32,7 +32,7 @@ bool testIsValid_doubleSelection(){
 
 bool testCorrectMatch(){
 	cout << S << "TESTING : correct match\n";
-	Memory m = make3x3Game();
+	MemoryController m = make3x3Game();
 	doGameMove(0,0,m);
 	doGameMove(0,1,m);
 	bool t1 = (m.getGameStatusFlag() == GE_ISCORRECTMATCH);

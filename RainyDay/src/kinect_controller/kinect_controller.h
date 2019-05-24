@@ -1,14 +1,8 @@
-
-
 #ifndef KINECT_CONTROLLER_H
 #define KINECT_CONTROLLER_H
+#include <libfreenect2/libfreenect2.hpp>
 
-
-
-class KinectController
-{
-
-
+class KinectController{
 public:
 	KinectController(int n_rows, int n_cols);
 	void print_dimensions();

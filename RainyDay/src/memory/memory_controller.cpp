@@ -1,13 +1,13 @@
 
-#include "memory.h"
+#include "memory_controller.h"
 #include "memory_model.h"
 #include <iostream>
 
-void Memory::setContentPath(std::string path){
+void MemoryController::setContentPath(std::string path){
 	path_content = path;
 }
 
-void Memory::setupGame(){
+void MemoryController::setupGame(){
 	_model = new MemoryModel();
 	_model->testing = testing;
 	_model->readAllCardsFromFile(path_content);
@@ -15,17 +15,17 @@ void Memory::setupGame(){
 	_model->initGameStats();
 }
 
-GridInfo Memory::getDimensions(){
+GridInfo MemoryController::getDimensions(){
 	return _dimensions;
 }
 
-void Memory::setDimensions(int n_rows, int n_cols){
+void MemoryController::setDimensions(int n_rows, int n_cols){
 	_dimensions.n_rows = n_rows;
 	_dimensions.n_cols = n_cols;
 	_dimensions.n = n_rows * n_cols;
 }
 
-void Memory::gameEvent(MemoryEvent e){
+void MemoryController::gameEvent(MemoryEvent e){
 	if (_model->validGameEvent(e)){
 		if (_model->isFirstMoveForTeam(e)){
 			_model->saveSelection(e);

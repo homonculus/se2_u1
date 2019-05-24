@@ -1,13 +1,12 @@
-#ifndef MEMORY_H
-#define MEMORY_H
+#ifndef MEMORYCONTROLLER_H
+#define MEMORYCONTROLLER_H
 
 #include "memory_model.h"
 #include <string>
 #include <vector>
 
-class Memory{
+class MemoryController{
 	public:
-
 		std::string path_content;
 		void setContentPath(std::string path);
 		void gameEvent(MemoryEvent e);
@@ -27,4 +26,4 @@ class Memory{
 };
 
 
-#endif // MEMORY_H
+#endif // MEMORYCONTROLLER_H
