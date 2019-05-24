@@ -1,0 +1,54 @@
+\documentclass{article}
+
+\usepackage{multicol}
+
+
+\usepackage{graphicx}% to include pdf image from matplotlib (vectorized)
+\usepackage{subcaption}% to have plots with subimages
+\usepackage{cite}
+\usepackage{geometry}
+
+\geometry{a4paper, left=0.5in,top=0.5in, right=0.5in, bottom = 0.8in}
+\renewcommand{\familydefault}{\sfdefault}% make sans-serif font
+%\setlength{\parindent}{0pt} % remove standard indentation
+
+\usepackage{array}
+\newcolumntype{P}[1]{>{\centering\arraybackslash}p{#1}}
+
+
+\title{Project Rainy Day}
+\date{2018}
+\author{Alexander Hartenstein}
+
+\begin{document}
+	\maketitle
+
+
+	\section{Requirements}
+	We are working with an elementary school to develop and educational that allows students to interact with educational content projected by a projector onto the floor. Three dimensional sensors provided by a Kinect sensor allow movement to be translated into gameplay. The objective of this game is to facilitate learning through gameplay.
+	\input{components/functionalrequirements.tex}
+	\input{components/nonfunctionalrequirements.tex}
+	\input{components/permissions.tex}
+	\input{components/glossary.tex}
+
+	\begin{figure}[h!]
+	  \centering
+	    \includegraphics[width=\textwidth]{components/usecasediagram.png}
+	    \caption{Use Case Diagram}
+	    \label{fig:use_case_diagram}
+	\end{figure}
+
+
+	\begin{figure}[h!]
+	  \centering
+	    \includegraphics[width=\textwidth]{components/componentDiagram.png}
+	    \caption{Component Diagram}
+	    \label{fig:component_diagram}
+	\end{figure}
+
+
+
+
+
+
+\end{document}

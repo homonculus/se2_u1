@@ -1,0 +1,34 @@
+
+
+Project Rainy Day
+
+We are working with an elementary school to develop and educational that allows students to interact with educational content projected by a projector onto the floor. Three dimensional sensors provided by a Kinect sensor allow movement to be translated into gameplay. The objective of this game is to facilitate learning through gameplay.
+
+Functional Requirements
+
+1.	Loading educational content, in this case with the use of .csv files with key/value pairs
+2.	Memory game logic (first game)
+3.	Graphical User Interface to set game parameters (number players, time limit)
+4.	Kinect drivers for multiplatform use
+5.	Recognize user movement with kinect system
+6.	Kinect as controller to update player scores
+7.	Graphical User Interface to reflect updates to player moves with card changes
+8.	Save game for replay/crashing
+
+
+Non-Functional Requirements
+1.	More games
+2.	Audio files to accompany player movements
+3.	Image files in game
+4.	Math playing logic
+
+
+Glossary
+1.	Memory : a game in which a grid of blank boxes is displayed. Players select two cards in consecutive order a card, which 'flips' the card to reveal the 'content side'. If the two 'content sides' match, the player receives a point. The player with the most matches wins. If the two 'content sides' do not match, the two revealed cards flip back to the 'blank side', and the next players flip two cards.
+2.	content side : 
+3.	player : a student who is involved in active game play.
+4.	teams : two players that act as a single unit, collaborating on an x, y axis to select a single 'card' to be flipped.
+5.	game admin : in this case, the teacher who is responsible for selecting game parameters such as time limits and number players/teams.
+6.	Kinect : sensor from microsoft with depth sensors and rgb camera which is used as a game controller to register player movement/selections
+7.	depth sensors : allows to register three dimensional movement. Rather than rgb values at each pixel, a milimeter depth value is returned at each pixel value.
+8.	game content : a csv table allowing for input of education content by teachers at the school. Each row represents a pair of memory cards which must be matched during game play.
