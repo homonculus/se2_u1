@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 
+#define NOCARDSELECTED -1;
 
 void MemoryModel::readAllCardsFromFile(std::string path){
 	std::ifstream file(path);
@@ -25,101 +26,119 @@ MemoryCard* MemoryModel::_makeCard(std::string s){
 	return card;
 }
 
-void MemoryModel::initGameCards(int num_cards){
+void MemoryModel::initGameInfo(int num_cards){
+	_ginfo.currentlySelectedCardsByTeam.reserve(2);
+	_ginfo.currentlySelectedCardsByTeam[0] = NOCARDSELECTED;
+	_ginfo.currentlySelectedCardsByTeam[1] = NOCARDSELECTED;
+	vector<int> blank(5,99);
+	_ginfo.idxsFoundByTeam.push_back(blank);
+	_ginfo.idxsFoundByTeam.push_back(blank);
+	_initGameCards(num_cards);
+}
+
+void MemoryModel::_initGameCards(int num_cards){
 	_clearGameCards();
 	if (!testing){std::random_shuffle(std::begin(_all_cards), std::end(_all_cards));}
 	_buildGameCardsWithRequiredNumberOfPairs(num_cards);
-	if (!testing){std::random_shuffle(std::begin(_game_cards), std::end(_game_cards));}
-}
-
-void MemoryModel::initGameStats(){
-	_gamestats.currentlySelectedCardsByTeam.reserve(2);
-	_gamestats.currentlySelectedCardsByTeam[0] = -1;
-	_gamestats.currentlySelectedCardsByTeam[1] = -1;
-
-	_gamestats.idxsFoundByTeam[0] = {-1}
-
+	if (!testing){std::random_shuffle(std::begin(_ginfo.cards), std::end(_ginfo.cards));}
+	_assignCardsTheirGameIdx();
 }
 
 void MemoryModel::_clearGameCards(){
-	if (_game_cards.size()>0){
-		_game_cards.clear();
+	if (_ginfo.cards.size()>0){
+		_ginfo.cards.clear();
 	}
 }
 
 void MemoryModel::_buildGameCardsWithRequiredNumberOfPairs(int num_cards){
 	int i = 0;
-	while(_game_cards.size()<num_cards && _game_cards.size()<_all_cards.size()){
+	while(_ginfo.cards.size()<(num_cards-1) && _ginfo.cards.size()<_all_cards.size()){
 		MemoryCard* currentCard = _all_cards[i];
 		// Check if card already added to gamecards
-		std::vector<MemoryCard*>::iterator it = std::find(_game_cards.begin(), _game_cards.end(), currentCard);
-		if (it == _game_cards.end()){
+		std::vector<MemoryCard*>::iterator it = std::find(_ginfo.cards.begin(), _ginfo.cards.end(), currentCard);
+		if (it == _ginfo.cards.end()){
 			// add card selected
-			_game_cards.push_back(currentCard);
+			_ginfo.cards.push_back(currentCard);
 			// Add all linked cards for card selected
 			for (int j=0;j<currentCard->linkedCards.size();j++){
-				_game_cards.push_back(currentCard->linkedCards[j]);
+				_ginfo.cards.push_back(currentCard->linkedCards[j]);
 			}
 		}
 		i+=1;
 	}
+	if (testing) std::cout << "_buildGameCardsWithRequiredNumberOfPairs : " << _ginfo.cards.size() << " playing, for " << num_cards << " gamevields\n";
+}
+
+void MemoryModel::_assignCardsTheirGameIdx(){
+	for (int i=0;i<_ginfo.cards.size();i++){
+		_ginfo.cards[i]->idx = i;
+	}
 }
 
 bool MemoryModel::validGameEvent(MemoryEvent e){
-	// Card has already been sucessfully overturned
 	if (testing) _logEvent(e);
-
-	bool t1 = (std::find(_gamestats.idxsFoundByTeam[e.team].begin(), _gamestats.idxsFoundByTeam[e.team].end(),  e.idx_selected) != _gamestats.idxsFoundByTeam[e.team].end());//(_gamestats.idxsFoundByTeam[e.team], e.idx_selected);
-	bool t2 = (_gamestats.currentlySelectedCardsByTeam[e.team] == e.idx_selected);
-
-	std::cout << "MemoryModel::validGameEvent : previously selected :" << _gamestats.currentlySelectedCardsByTeam[e.team] << " now selected :" << e.idx_selected << std::endl;
-	if (t1 || t2){ 
+	bool t1 = contains(_ginfo.idxsFound, e.idx_selected); // card has already been successfully matched/found
+	bool t2 = (_ginfo.currentlySelectedCardsByTeam[e.team] == e.idx_selected); // card was just overturned (but not yet matched) ie double selected
+	bool t3 = !(e.idx_selected < _ginfo.cards.size()); // is not a card, but empty grid field (ie odd number of cells in grid)
+	std::cout << "MemoryModel::validGameEvent : previously selected :" << _ginfo.currentlySelectedCardsByTeam[e.team] << " now selected :" << e.idx_selected << std::endl;
+	if (t1 || t2 || t3){ 
 		if (testing) std::cout << "MemoryModel::validGameEvent : NOT valid move" << t1 << t2 << "\n";
-		_gamestats.flag = GE_INVALID;
+		_ginfo.flag = GE_INVALID;
 		return false; 
 	}
 	if (testing) std::cout << "MemoryModel::validGameEvent : is valid move\n";
+	_incrementCardViewCount(e);
 	return true;
 }
 
+void MemoryModel::_incrementCardViewCount(MemoryEvent e){
+	_ginfo.cards[e.idx_selected]->viewCount += 1;
+}
+
 bool MemoryModel::isFirstMoveForTeam(MemoryEvent e){
-	if (_gamestats.currentlySelectedCardsByTeam[_gamestats.currentTeam]>=0){
+	if (_ginfo.currentlySelectedCardsByTeam[_ginfo.currentTeam]>=0){
 		if (testing) std::cout << "MemoryModel::isFirstMoveForTeam : NOT first move\n";
 		return false;
 	}
 	if (testing) std::cout << "MemoryModel::isFirstMoveForTeam : is first move\n";
-	_gamestats.flag = GE_ISFIRSTMOVE;
+	_ginfo.flag = GE_ISFIRSTMOVE;
 	return true;
 }
 
 void MemoryModel::saveSelection(MemoryEvent e){
-	_gamestats.currentlySelectedCardsByTeam[e.team] = e.idx_selected;
+	_ginfo.currentlySelectedCardsByTeam[e.team] = e.idx_selected;
 }
 
 bool MemoryModel::correctMatch(MemoryEvent e){
-	MemoryCard* _selected_card = _game_cards[e.idx_selected];
-	MemoryCard* _firstSelected = _firstCardSelected(e);
-	if (testing) std::cout << "MemoryModel::correctMatch : idx selected(" << e.idx_selected << ") text(" << _selected_card->text << ") firstcard(" << _firstSelected->text << ")\n";
-	if (_selected_card->linkedCards[0] == _firstCardSelected(e)){
-		_gamestats.flag = GE_ISCORRECTMATCH;
+	MemoryCard* selected_card = _ginfo.cards[e.idx_selected];
+	if (selected_card->linkedCards[0] == _firstCardSelected(e)){
+		_ginfo.flag = GE_ISCORRECTMATCH;
 		return true;
 	}
 	return false;
 }
 
 void MemoryModel::saveScore(MemoryEvent e){
-	// _gamestats.idxsFoundByTeam[e.team].push_back(e.idx_selected);
-	// _gamestats.idxsFoundByTeam[e.team].push_back(_gamestats.currentlySelectedCardsByTeam[e.team]);
-	_gamestats.idxsFound.push_back(e.idx_selected);
-	_gamestats.idxsFound.push_back(_gamestats.currentlySelectedCardsByTeam[e.team]);
+	if (testing) std::cout << "MemoryModel::saveScore 0\n";
+	_ginfo.idxsFoundByTeam[e.team].push_back(e.idx_selected);
+	_ginfo.idxsFoundByTeam[e.team].push_back(_ginfo.currentlySelectedCardsByTeam[e.team]);
+	_ginfo.idxsFound.push_back(e.idx_selected);
+	_ginfo.idxsFound.push_back(_ginfo.currentlySelectedCardsByTeam[e.team]);
+	MemoryCard* selected_card = _ginfo.cards[e.idx_selected];
+	MemoryCard* first_selected = _firstCardSelected(e);
+	selected_card->status = e.team + 1;
+	first_selected->status = e.team + 1;
+	if (testing) std::cout << "MemoryModel::saveScore : idx selected(" << e.idx_selected << ") text(" << selected_card->text << ") firstcard(" << first_selected->text << ")\n";
+
 }
 
 void MemoryModel::moveToNextTeam(MemoryEvent e){
-	_gamestats.currentTeam = !_gamestats.currentTeam;
+	_ginfo.currentTeam = !_ginfo.currentTeam;
+	if (testing) std::cout << "MemoryModel::moveToNextTeam : team now(" << _ginfo.currentTeam << ")\n";
 }
 
 void MemoryModel::cleanupCurrentSelections(MemoryEvent e){
-	_gamestats.currentlySelectedCardsByTeam[e.team] = -1;
+	_ginfo.currentlySelectedCardsByTeam[e.team] = NOCARDSELECTED;
 }
 
 void MemoryModel::_printArrayOfCards(std::vector<MemoryCard*> cards){
@@ -132,7 +151,7 @@ void MemoryModel::printContent(){
 	std::cout << "ALL CARDS : "<< "\n";
 	_printArrayOfCards(_all_cards);
 	std::cout << "GAME CARDS : "<< "\n";
-	_printArrayOfCards(_game_cards);
+	_printArrayOfCards(_ginfo.cards);
 }
 
 void MemoryModel::_logEvent(MemoryEvent e){
@@ -140,8 +159,10 @@ void MemoryModel::_logEvent(MemoryEvent e){
 }
 
 MemoryGameEventFlags MemoryModel::getGameStatusFlag(){
-	if (testing) std::cout << "MemoryModel::getGameStatusFlag : status is " << _gamestats.flag << std::endl;
-	return _gamestats.flag;
+	if (testing) std::cout << "MemoryModel::getGameStatusFlag : status is " << _ginfo.flag << std::endl;
+	return _ginfo.flag;
 }
+
+
 
 

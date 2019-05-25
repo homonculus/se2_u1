@@ -11,8 +11,7 @@ void MemoryController::setupGame(){
 	_model = new MemoryModel();
 	_model->testing = testing;
 	_model->readAllCardsFromFile(path_content);
-	_model->initGameCards(_dimensions.n);
-	_model->initGameStats();
+	_model->initGameInfo(_dimensions.n);
 }
 
 GridInfo MemoryController::getDimensions(){

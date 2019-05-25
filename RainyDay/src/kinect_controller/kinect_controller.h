@@ -1,5 +1,6 @@
 #ifndef KINECT_CONTROLLER_H
 #define KINECT_CONTROLLER_H
+
 #include <libfreenect2/libfreenect2.hpp>
 
 class KinectController{

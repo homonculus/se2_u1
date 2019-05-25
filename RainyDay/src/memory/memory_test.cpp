@@ -30,25 +30,71 @@ bool testIsValid_doubleSelection(){
 	return false;
 }
 
-bool testCorrectMatch(){
+bool testSinglePlayerAllCorrect(){
 	cout << S << "TESTING : correct match\n";
 	MemoryController m = make3x3Game();
 	doGameMove(0,0,m);
 	doGameMove(0,1,m);
-	bool t1 = (m.getGameStatusFlag() == GE_ISCORRECTMATCH);
-	cout << GE_ISCORRECTMATCH << " for GE_ISCORRECTMATCH "<< t1 << "\n"; 
-	if (t1 == true){
-		return true;
+	if (m.getGameStatusFlag() != GE_ISCORRECTMATCH){
+		return false;
 	}
-	return false;
+	doGameMove(0,2,m);
+	doGameMove(0,3,m);
+	if (m.getGameStatusFlag() != GE_ISCORRECTMATCH){
+		return false;
+	}
+	doGameMove(0,4,m);
+	doGameMove(0,5,m);
+	if (m.getGameStatusFlag() != GE_ISCORRECTMATCH){
+		return false;
+	}
+	doGameMove(0,6,m);
+	doGameMove(0,7,m);
+	if (m.getGameStatusFlag() != GE_ISCORRECTMATCH){
+		return false;
+	}
+	return true;
+}
+
+bool testOverIdx(){
+	cout << S << "TESTING : idx selected over available n cards\n";
+	MemoryController m = make3x3Game();
+	doGameMove(0,8,m);
+	if (m.getGameStatusFlag() != GE_INVALID){
+		return false;
+	}
+	return true;
+}
+
+bool testSwitchingTeams(){
+	cout << S << "TESTING : saving score\n";
+	MemoryController m = make3x3Game();
+	MemoryInfo* ginfo = m.getGameInfo();
+	// first team 0, make wrong match
+	doGameMove(0,0,m);
+	if (ginfo->currentTeam != 0){ return false; }
+	doGameMove(0,2,m);
+	if (ginfo->currentTeam != 1){ return false; }
+	// now team 1s turn, make 1 correct match, then one wrong
+	doGameMove(1,2,m);
+	if (ginfo->currentTeam != 1){ return false; }
+	doGameMove(1,3,m);
+	if (ginfo->currentTeam != 1){ return false; }
+	doGameMove(1,4,m);
+	if (ginfo->currentTeam != 1){ return false; }
+	doGameMove(1,6,m);
+	if (ginfo->currentTeam != 0){ return false; }
+	return true;
 }
 
 int main(){
 
 	bool t1 = testIsValid_doubleSelection();
-	bool t2 = testCorrectMatch();
+	bool t2 = testSinglePlayerAllCorrect();
+	bool t3 = testOverIdx();
+	bool t4 = testSwitchingTeams();
 
-	if (t1 && t2){
+	if (t1 && t2 && t3 && t4){
 		cout << S << "ALL TESTS PASS\n";
 	}
 	else{

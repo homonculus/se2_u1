@@ -13,7 +13,7 @@ struct GridInfo{
 	int n;
 };
 
-struct GameStats{
+struct GameInfo{
 	std::vector<int> teamScores;
 	int currentTeam;
 };
