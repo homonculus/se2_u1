@@ -5,14 +5,8 @@ void MemoryController::setContentPath(std::string path){
 	path_content = path;
 }
 
-void MemoryController::setDimensions(int n_rows, int n_cols){
-	_dimensions.n_rows = n_rows;
-	_dimensions.n_cols = n_cols;
-	_dimensions.n = n_rows * n_cols;
-}
-
-GridInfo MemoryController::getDimensions(){
-	return _dimensions;
+void MemoryController::setDimensions(GridInfo dims){
+	_dimensions = dims;
 }
 
 void MemoryController::setupGame(){

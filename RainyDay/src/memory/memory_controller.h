@@ -10,12 +10,11 @@ class MemoryController{
 	public:
 		std::string path_content;
 		void setContentPath(std::string path);
+		void setDimensions(GridInfo dims);
 		void cardSelected(MemoryEvent e);
 		void setupGame();
 		void startGame();
 		void endGame();
-		void setDimensions(int n_rows, int n_cols);
-		GridInfo getDimensions();
 		MemoryGameEventFlags getGameStatusFlag(){return _model->getGameStatusFlag();};
 		MemoryInfo* getGameInfo(){return _model->getGameInfo();};
 		bool testing;

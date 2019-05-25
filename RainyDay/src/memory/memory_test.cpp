@@ -5,9 +5,10 @@
 using namespace std;
 
 MemoryController make3x3Game(){
+	GridInfo dims = {3,3,9};
 	MemoryController m = MemoryController();
 	m.testing = true;
-	m.setDimensions(3,3);
+	m.setDimensions(dims);
 	m.setContentPath("./content.csv");
 	m.setupGame();
 	return m;
