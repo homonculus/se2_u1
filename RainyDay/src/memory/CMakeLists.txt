@@ -11,7 +11,8 @@ add_library(Memory
 	${project_headers})
 
 target_link_libraries(Memory 
-	PUBLIC)
+	PUBLIC
+	KinectControllers)
 
 
 target_include_directories (Memory PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

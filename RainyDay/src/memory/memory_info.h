@@ -18,11 +18,6 @@ struct MemoryCard{
 	int viewCount;
 };
 
-struct MemoryEvent{
-	int team;
-	int idx_selected;
-};
-
 struct MemoryInfo: GameInfo{
 	std::vector<int> currentlySelectedCardsByTeam;
 	std::vector<std::vector<int> > idxsFoundByTeam;

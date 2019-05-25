@@ -24,7 +24,8 @@ target_link_libraries(RainyDay
 	Qt5::Widgets
 	${freenect2_LIBRARIES}
 	${OpenCV_LIBS}
-	KinectControllers)
+	KinectControllers
+	Memory)
 
 
 	

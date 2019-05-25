@@ -1,12 +1,15 @@
 #include "memory_controller.h"
+#include "team_controller.h"
 #include <iostream>
 
 void MemoryController::setContentPath(std::string path){
 	path_content = path;
 }
 
-void MemoryController::setDimensions(GridInfo dims){
-	_dimensions = dims;
+void MemoryController::setDimensions(int n_rows, int n_cols){
+	_dimensions.n_rows = n_rows;
+	_dimensions.n_cols = n_cols;
+	_dimensions.n = n_rows*n_cols;
 }
 
 void MemoryController::setupGame(){
@@ -19,20 +22,28 @@ void MemoryController::setupGame(){
 	_view->initGameView(_model->getGameInfo(), _dimensions);
 }
 
-void MemoryController::cardSelected(MemoryEvent e){
-	if (_model->validGameEvent(e)){
-		if (_model->isFirstMoveForTeam(e)){
-			_model->saveSelection(e);
+void MemoryController::teamControllerDidChange(TeamControllerEventInfo e){
+
+}
+
+void MemoryController::cardSelected(int i){
+	if (_model->validGameEvent(i)){
+		if (_model->isFirstMoveForTeam(i)){
+			_model->saveSelection(i);
 		}
 		else{
-			if (_model->correctMatch(e)){
-				_model->saveScore(e);
+			if (_model->correctMatch(i)){
+				_model->saveScore(i);
 			}
 			else{
-				_model->moveToNextTeam(e);
+				_model->moveToNextTeam(i);
 			}
-			_model->cleanupCurrentSelections(e);
+			_model->cleanupCurrentSelections(i);
 		}
 	}
 	_view->updateView();
+}
+
+bool MemoryController::gameIsOver(){
+	return _model->gameIsOver();
 }
