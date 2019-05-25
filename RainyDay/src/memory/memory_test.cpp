@@ -15,7 +15,7 @@ MemoryController make3x3Game(){
 
 void doGameMove(int team,int selection, MemoryController m){
 	MemoryEvent e0 = {team,selection};
-	m.gameEvent(e0);
+	m.cardSelected(e0);
 }
 
 bool testIsValid_doubleSelection(){
@@ -66,7 +66,7 @@ bool testOverIdx(){
 	return true;
 }
 
-bool testSwitchingTeams(){
+bool testMoveToNextTeam(){
 	cout << S << "TESTING : saving score\n";
 	MemoryController m = make3x3Game();
 	MemoryInfo* ginfo = m.getGameInfo();
@@ -92,7 +92,7 @@ int main(){
 	bool t1 = testIsValid_doubleSelection();
 	bool t2 = testSinglePlayerAllCorrect();
 	bool t3 = testOverIdx();
-	bool t4 = testSwitchingTeams();
+	bool t4 = testMoveToNextTeam();
 
 	if (t1 && t2 && t3 && t4){
 		cout << S << "ALL TESTS PASS\n";
