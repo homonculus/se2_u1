@@ -22,7 +22,7 @@ public:
 	bool start();
 	bool end();
 	GridInfo* dimensions;
-	int kinectControllerReceivedImage();
+	int kinectControllerReceivedImage(cv::Mat depthImage);
 	TeamControllerDelegate* delegate;
 
 

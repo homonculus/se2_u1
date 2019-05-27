@@ -5,11 +5,12 @@
 #include <libfreenect2/registration.h>
 #include <libfreenect2/frame_listener_impl.h>
 #include <libfreenect2/packet_pipeline.h>
+#include <opencv2/opencv.hpp>
 
 
 class KinectControllerDelegate{
 public:
-	virtual int kinectControllerReceivedImage() = 0;
+	virtual int kinectControllerReceivedImage(cv::Mat depthImage) = 0;
 
 };
 

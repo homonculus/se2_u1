@@ -17,9 +17,14 @@ bool TeamController::end(){
 	return true;
 }
 
-int TeamController::kinectControllerReceivedImage(){
+int TeamController::kinectControllerReceivedImage(cv::Mat depthImage){
 	std::cout << "kinectControllerReceivedImage\n";
 	TeamControllerEventInfo e = {TC_CELLSELECTED,5};
+	
+
+	cv::namedWindow("Display Image", cv::WINDOW_AUTOSIZE);
+	cv::imshow("Display Image",depthImage);
+
 	delegate->teamControllerDidChange(e);
 	return 0;
 }
