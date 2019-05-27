@@ -6,8 +6,8 @@ include_directories("/usr/include/libusb-1.0/")
 find_package( OpenCV REQUIRED )
 include_directories( %{OpenCV_INCLUDE_DIRS} ) 
 
-set(project_sources kinect_controller.cpp main.cpp)
-set(project_headers kinect_controller.h)
+set(project_sources kinect_controller.cpp team_controller.cpp)
+set(project_headers kinect_controller.h team_controller.h)
 
 
 # wrap the ui file to a c++ header
@@ -18,7 +18,8 @@ add_library(KinectControllers
 target_link_libraries(KinectControllers 
 	PUBLIC
 	${freenect2_LIBRARIES}
-	${OpenCV_LIBS})
+	${OpenCV_LIBS}
+	Memory)
 
 
 target_include_directories (KinectControllers PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

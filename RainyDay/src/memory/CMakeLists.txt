@@ -2,7 +2,7 @@ project(Memory VERSION 0.1 LANGUAGES CXX)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(project_sources memory_controller.cpp memory_model.cpp memory_view.cpp)
-set(project_headers memory_controller.h memory_model.h memory_view.h)
+set(project_headers memory_controller.h memory_model.h memory_view.h game.h)
 
 
 # wrap the ui file to a c++ header

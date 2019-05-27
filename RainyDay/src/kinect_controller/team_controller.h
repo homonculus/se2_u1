@@ -1,6 +1,8 @@
 #ifndef TEAMCONTROLLER_H
 #define TEAMCONTROLLER_H
 
+#include "game.h"
+#include "kinect_controller.h"
 
 enum TeamControllerEventFlag{TC_COLUMNSELECTED, TC_ROWSELECTED, TC_CELLSELECTED};
 
@@ -9,15 +11,18 @@ struct TeamControllerEventInfo{
 	int selected;
 };
 
-class TeamController{
+class TeamController: public KinectControllerDelegate{
 public:
-	TeamController(int n_rows, int n_cols);
+	TeamController(GridInfo* dims);
 	bool start();
 	bool end();
+	GridInfo* dimensions;
+	int kinectController_imageReceived();
+
 
 private:
-	int n_rows;
-    int n_cols; 
+	GridInfo* _dimensions;
+	KinectController* _kinectController;
     bool protonect_paused;
 };
 

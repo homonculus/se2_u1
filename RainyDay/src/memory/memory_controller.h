@@ -11,7 +11,7 @@ class MemoryController{
 	public:
 		std::string path_content;
 		void setContentPath(std::string path);
-		void setDimensions(int n_rows, int n_cols);
+		void setDimensions(GridInfo* dims);
 		void teamControllerDidChange(TeamControllerEventInfo e);
 		void cardSelected(int idx);
 		void setupGame();
@@ -25,7 +25,7 @@ class MemoryController{
 	private:
 		std::vector<MemoryCard*> _all_cards;
 		std::vector<MemoryCard*> _game_cards;
-		GridInfo _dimensions;
+		GridInfo* _dimensions;
 		MemoryModel* _model;
 		MemoryView* _view;
 };

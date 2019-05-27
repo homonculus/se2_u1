@@ -5,12 +5,12 @@
 
 class MemoryView{
 	public:
-		void initGameView(MemoryInfo* info, GridInfo dimensions);
+		void initGameView(MemoryInfo* info, GridInfo* dimensions);
 		void updateView();
 		
 	private:
 		MemoryInfo* _ginfo;
-		GridInfo _dimensions;
+		GridInfo* _dimensions;
 		void _drawGrid();
 };
 
