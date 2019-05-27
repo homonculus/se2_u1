@@ -1,5 +1,4 @@
 #include "memory_controller.h"
-#include "team_controller.h"
 #include <iostream>
 
 void MemoryController::setContentPath(std::string path){
@@ -18,6 +17,13 @@ void MemoryController::setupGame(){
 
 	_view = new MemoryView();
 	_view->initGameView(_model->getGameInfo(), _dimensions);
+
+	_input = new TeamController(_dimensions);
+	_input->delegate = this;
+}
+
+void MemoryController::startGame(){
+	_input->start();
 }
 
 void MemoryController::teamControllerDidChange(TeamControllerEventInfo e){

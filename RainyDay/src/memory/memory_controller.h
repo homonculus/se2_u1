@@ -28,6 +28,7 @@ class MemoryController: public TeamControllerDelegate{
 		GridInfo* _dimensions;
 		MemoryModel* _model;
 		MemoryView* _view;
+		TeamController* _input;
 };
 
 
