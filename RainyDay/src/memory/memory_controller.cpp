@@ -21,7 +21,7 @@ void MemoryController::setupGame(){
 }
 
 void MemoryController::teamControllerDidChange(TeamControllerEventInfo e){
-
+	std::cout << "MemoryController::teamControllerDidChange : type(" << e.type << ") selected(" << e.selected << ")\n";
 }
 
 void MemoryController::cardSelected(int i){

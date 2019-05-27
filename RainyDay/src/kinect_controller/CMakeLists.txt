@@ -6,7 +6,7 @@ include_directories("/usr/include/libusb-1.0/")
 find_package( OpenCV REQUIRED )
 include_directories( %{OpenCV_INCLUDE_DIRS} ) 
 
-set(project_sources kinect_controller.cpp team_controller.cpp)
+set(project_sources kinect_controller.cpp team_controller.cpp kinect_tests.cpp)
 set(project_headers kinect_controller.h team_controller.h)
 
 

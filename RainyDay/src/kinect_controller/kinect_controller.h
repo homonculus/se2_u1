@@ -3,11 +3,13 @@
 
 #include <libfreenect2/libfreenect2.hpp>
 #include <libfreenect2/registration.h>
+#include <libfreenect2/frame_listener_impl.h>
+#include <libfreenect2/packet_pipeline.h>
 
 
 class KinectControllerDelegate{
 public:
-	virtual int kinectController_imageReceived() = 0;
+	virtual int kinectControllerReceivedImage() = 0;
 
 };
 
@@ -16,12 +18,15 @@ public:
 	int startDevice();
 	void closeDevice();
 	KinectControllerDelegate* delegate;
+	bool shutdown;
 
 private:
 	bool protonect_paused;
 	libfreenect2::Freenect2Device* _dev;
 	libfreenect2::Registration* _registration;
-	void _getFrame();
+	libfreenect2::SyncMultiFrameListener* _listener;
+	libfreenect2::FrameMap _frames;
+	int _getFrame();
 
 };
 

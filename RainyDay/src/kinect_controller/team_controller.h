@@ -11,13 +11,19 @@ struct TeamControllerEventInfo{
 	int selected;
 };
 
+class TeamControllerDelegate{
+public:
+	virtual void teamControllerDidChange(TeamControllerEventInfo e) = 0;
+};
+
 class TeamController: public KinectControllerDelegate{
 public:
 	TeamController(GridInfo* dims);
 	bool start();
 	bool end();
 	GridInfo* dimensions;
-	int kinectController_imageReceived();
+	int kinectControllerReceivedImage();
+	TeamControllerDelegate* delegate;
 
 
 private:

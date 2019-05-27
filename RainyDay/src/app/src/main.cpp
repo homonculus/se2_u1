@@ -17,11 +17,15 @@ int main(int argc, char *argv[]){
 	GridInfo dimensions = {3,3,9};
 
 	TeamController* tc = new TeamController(&dimensions);
+
+	MemoryController* m = new MemoryController();
+	m->setDimensions(&dimensions);
+	m->setContentPath("./content.csv");
+	m->setupGame();
+
+	tc->delegate = m;
 	tc->start();
-	// MemoryController* m = new MemoryController();
-	// m->setDimensions(&dimensions);
-	// m->setContentPath("./content.csv");
-	// m->setupGame();
+
 
 	// while(!m->gameIsOver()){
 

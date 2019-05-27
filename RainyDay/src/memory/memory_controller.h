@@ -7,7 +7,7 @@
 #include <string>
 #include <vector>
 
-class MemoryController{
+class MemoryController: public TeamControllerDelegate{
 	public:
 		std::string path_content;
 		void setContentPath(std::string path);

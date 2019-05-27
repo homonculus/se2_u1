@@ -17,7 +17,9 @@ bool TeamController::end(){
 	return true;
 }
 
-int TeamController::kinectController_imageReceived(){
-	std::cout << "kinectController_imageReceived\n";
+int TeamController::kinectControllerReceivedImage(){
+	std::cout << "kinectControllerReceivedImage\n";
+	TeamControllerEventInfo e = {TC_CELLSELECTED,5};
+	delegate->teamControllerDidChange(e);
 	return 0;
 }
