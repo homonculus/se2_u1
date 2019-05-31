@@ -1,32 +1,27 @@
-project(RainyDay LANGUAGES CXX)
+project(GUI LANGUAGES CXX)
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 find_package(Qt5 COMPONENTS REQUIRED Core Gui Widgets)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
-set(project_sources src/mainwindow.cpp src/main.cpp)
-set(project_headers src/mainwindow.h)
-set(project_ui src/mainwindow.ui)
+set(project_sources selectable_grid.cpp)
+set(project_headers selectable_grid.h)
 
 # wrap the ui file to a c++ header
-qt5_wrap_ui(ui_wrap ${project_ui})
 qt5_wrap_cpp(moc_sources ${project_headers})
 
-add_executable(RainyDay 
+add_library(GUI 
 	${project_sources} 
-	${project_headers}
-	${ui_wrap} 
-	${moc_sources})
+	${project_headers})
 
-target_link_libraries(RainyDay 
+
+target_link_libraries(GUI 
 	LINK_PUBLIC
 	Qt5::Core
 	Qt5::Gui 
-	Qt5::Widgets
-	${freenect2_LIBRARIES}
-	${OpenCV_LIBS}
-	KinectControllers
-	Memory)
+	Qt5::Widgets)
 
+target_include_directories (GUI PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 	
 # auto copy dlls if on windows
 if(WIN32)

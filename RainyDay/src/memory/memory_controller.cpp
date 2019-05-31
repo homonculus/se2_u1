@@ -28,6 +28,15 @@ void MemoryController::startGame(){
 
 void MemoryController::teamControllerDidChange(TeamControllerEventInfo e){
 	std::cout << "MemoryController::teamControllerDidChange : type(" << e.type << ") selected(" << e.selected << ")\n";
+	if (e.type == TC_CELLSELECTED){
+		cardSelected(e.selected);
+	}
+	else if (e.type == TC_ROWSELECTED){
+		_view->highlightRowForTeam(e.selected, e.team);
+	}
+	else if (e.type == TC_COLUMNSELECTED){
+		_view->highlightColumnForTeam(e.selected, e.team);
+	}
 }
 
 void MemoryController::cardSelected(int i){

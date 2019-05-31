@@ -13,6 +13,7 @@ INCLUDE_DIRECTORIES(
 )
 
 # Targets that we develop here
+add_subdirectory(gui)
 add_subdirectory(memory)
 add_subdirectory(kinect_controller)
 add_subdirectory(app)

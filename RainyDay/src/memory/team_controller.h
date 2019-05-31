@@ -9,6 +9,7 @@ enum TeamControllerEventFlag{TC_COLUMNSELECTED, TC_ROWSELECTED, TC_CELLSELECTED}
 struct TeamControllerEventInfo{
 	TeamControllerEventFlag type;
 	int selected;
+	int team;
 };
 
 class TeamControllerDelegate{
