@@ -21,6 +21,7 @@ class MemoryController: public TeamControllerDelegate{
 		MemoryGameEventFlags getGameStatusFlag(){return _model->getGameStatusFlag();};
 		MemoryInfo* getGameInfo(){return _model->getGameInfo();};
 		bool testing;
+		void showWindow();
 
 	private:
 		std::vector<MemoryCard*> _all_cards;

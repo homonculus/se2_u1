@@ -60,3 +60,7 @@ void MemoryController::cardSelected(int i){
 bool MemoryController::gameIsOver(){
 	return _model->gameIsOver();
 }
+
+void MemoryController::showWindow(){
+	_view->showWindow();
+}

@@ -7,12 +7,25 @@
 #include <QWidget>
 #include "util.h"
 
+// class RenderArea : public QWidget
+// {
+//     Q_OBJECT
+
+// public:
+//     QSize minimumSizeHint() const override;
+//     QSize sizeHint() const override;
+
+// private:
+// };
+
+
+
 class SelectableGrid : public QWidget
 {
     Q_OBJECT
 
 public:
-    SelectableGrid(QWidget *parent = 0);
+    SelectableGrid();
     QSize minimumSizeHint() const override;
     QSize sizeHint() const override;
     void setDimensions(int r, int c);

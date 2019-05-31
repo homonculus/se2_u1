@@ -3,7 +3,7 @@
 #include <QPainter>
 
 
-SelectableGrid::SelectableGrid(QWidget *parent) : QWidget(parent){
+SelectableGrid::SelectableGrid(){
     antialiased = false;
     transformed = false;
     pixmap.load(":/images/qt-logo.png");

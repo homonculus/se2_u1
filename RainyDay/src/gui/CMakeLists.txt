@@ -4,15 +4,16 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 find_package(Qt5 COMPONENTS REQUIRED Core Gui Widgets)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
-set(project_sources selectable_grid.cpp)
-set(project_headers selectable_grid.h)
+set(project_sources selectable_grid.cpp render_window.cpp)
+set(project_headers selectable_grid.h render_window.h)
 
 # wrap the ui file to a c++ header
 qt5_wrap_cpp(moc_sources ${project_headers})
 
 add_library(GUI 
 	${project_sources} 
-	${project_headers})
+	${project_headers}
+	${moc_sources})
 
 
 target_link_libraries(GUI 
