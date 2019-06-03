@@ -17,10 +17,6 @@ int main(int argc, char *argv[]){
 	m->setupGame();
 
    	m->showWindow();
-
-   	while (true){
-   		std::cout <<"hellow\n";
-   	}
     a.exec();
 	return 0;
 }
