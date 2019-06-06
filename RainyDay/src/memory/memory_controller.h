@@ -6,8 +6,9 @@
 #include "team_controller.h"
 #include <string>
 #include <vector>
+#include "render_window.h"
 
-class MemoryController: public TeamControllerDelegate{
+class MemoryController: public TeamControllerDelegate, public RenderWindowDelegate{
 	public:
 		std::string path_content;
 		void setContentPath(std::string path);
@@ -22,6 +23,7 @@ class MemoryController: public TeamControllerDelegate{
 		MemoryInfo* getGameInfo(){return _model->getGameInfo();};
 		bool testing;
 		void showWindow();
+		void renderWindowControllerDidChange(int e);
 
 	private:
 		std::vector<MemoryCard*> _all_cards;
@@ -30,6 +32,7 @@ class MemoryController: public TeamControllerDelegate{
 		MemoryModel* _model;
 		MemoryView* _view;
 		TeamController* _input;
+		std::vector<int> _keyboardInput;
 };
 
 

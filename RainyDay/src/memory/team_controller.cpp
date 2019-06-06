@@ -3,7 +3,6 @@
 
 TeamController::TeamController(GridInfo* dimensions){
 	_dimensions = dimensions;
-
 	_gridController = new GridController(_dimensions->n_rows, _dimensions->n_cols);
 	_gridController->delegate = this;
 	

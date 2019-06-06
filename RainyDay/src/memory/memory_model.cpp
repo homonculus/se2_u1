@@ -9,8 +9,12 @@
 void MemoryModel::readAllCardsFromFile(std::string path){
 	std::ifstream file(path);
 	CSVRow row;
+	testing = true;
+	std::cout << "MemoryModel::readAllCardsFromFile\n";
 	while(file >> row)
 	{
+		std::cout << "MemoryModel::readAllCardsFromFile : reading line\n";
+
 		MemoryCard* c1 = _makeCard(row[0]);
 		MemoryCard* c2 = _makeCard(row[1]);
 		c1->linkedCards.push_back(c2);
@@ -18,6 +22,7 @@ void MemoryModel::readAllCardsFromFile(std::string path){
 		_all_cards.push_back(c1);
 		_all_cards.push_back(c2);
 	}
+	std::cout << "MemoryModel::readAllCardsFromFile : findished reading" << _all_cards.size() << "\n";
 }
 
 MemoryCard* MemoryModel::_makeCard(std::string s){
@@ -52,7 +57,10 @@ void MemoryModel::_clearGameCards(){
 
 void MemoryModel::_buildGameCardsWithRequiredNumberOfPairs(int num_cards){
 	int i = 0;
+	std::cout << "MemoryModel::_buildGameCardsWithRequiredNumberOfPairs : num_cards:" << num_cards << " _allcards:" << _all_cards.size() <<"\n";
+
 	while(_ginfo.cards.size()<(num_cards-1) && _ginfo.cards.size()<_all_cards.size()){
+		std::cout << "MemoryModel::_buildGameCardsWithRequiredNumberOfPairs : adding card " << i << "\n";
 		MemoryCard* currentCard = _all_cards[i];
 		// Check if card already added to gamecards
 		std::vector<MemoryCard*>::iterator it = std::find(_ginfo.cards.begin(), _ginfo.cards.end(), currentCard);

@@ -9,18 +9,23 @@ class MemoryView{
 	public:
 		void initGameView(MemoryInfo* info, GridInfo* dimensions);
 		void updateView();
-		void highlightColumnForTeam(int idx, int team);
-		void highlightRowForTeam(int idx, int team);
+		void refreshCellSelections();
 		void showWindow();
+		void setSelectedColumn(int c);
+		void setSelectedRow(int r);
+		void setDelegate(RenderWindowDelegate* d);
 
 		
 	private:
 		MemoryInfo* _ginfo;
 		GridInfo* _dimensions;
 		void _drawGrid();
-
+		void _makeGridCellInfos();
+		std::vector<SelectableGridCell*> cellsInfo;
 		RenderWindow* _window;
 		SelectableGrid* _grid;
+		int _selectedRow;
+		int _selectedCol;
 };
 
 # endif// MEMORYVIEW_H

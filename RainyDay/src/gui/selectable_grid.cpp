@@ -1,9 +1,11 @@
 #include "selectable_grid.h"
 #include "util.h"
 #include <QPainter>
-
 #include <iostream>
+
 SelectableGrid::SelectableGrid(int r, int c){
+    std::cout << "SelectableGrid::SelectableGrid 0\n";
+
     antialiased = false;
     transformed = false;
     pixmap.load(":/images/qt-logo.png");
@@ -15,6 +17,8 @@ SelectableGrid::SelectableGrid(int r, int c){
     _card_indent.x = 5;
     _card_indent.y = 5;
     _setPen();
+    std::cout << "SelectableGrid::SelectableGrid 1\n";
+
 }
 
 void SelectableGrid::setCellsInfos(std::vector<SelectableGridCell*> ci){
@@ -34,10 +38,10 @@ void SelectableGrid::paintEvent(QPaintEvent * /* event */){
     painter.setPen(pen);
     painter.setRenderHint(QPainter::Antialiasing, true);
     int i = 0;
-    for (int x = 0; x < n_cols; x ++) {
-        for (int y = 0; y < n_rows; y ++) {
+    for (int r = 0; r < n_rows; r ++) {
+        for (int c = 0; c < n_cols; c ++) {
             painter.save();
-            painter.translate(x*_cell_size.width, y*_cell_size.height);
+            painter.translate(c*_cell_size.width, r*_cell_size.height);
             this->_drawCard(&painter,cellsInfo[i]);
             painter.restore();
             i++;
@@ -53,12 +57,18 @@ void SelectableGrid::_calculateCardSize(){
 }
 
 void SelectableGrid::_drawCard(QPainter *painter, SelectableGridCell* cellInfo){
-    std::string s = "#006266";
     _setBrushColor(cellInfo->color);
     painter->setBrush(brush);
     QRect rect(_card_indent.x, _card_indent.y, _card_size.width, _card_size.height);
     painter->drawRoundedRect(rect, 10, 10, Qt::RelativeSize);
-    painter->drawText( QPoint(0,50), "HELLO THERE");
+
+
+    // painter->drawText( QPoint(0,_card_size.height/2), cellInfo->text.c_str());
+    
+    const QRect rectangle = QRect(40, 0, _card_size.width, _card_size.height);
+    QRect boundingRect;
+    painter->drawText(rectangle, 0, cellInfo->text.c_str(), &boundingRect);
+
     //painter.drawRect(rect);
     //painter.drawPixmap(10, 10, pixmap);
 }
