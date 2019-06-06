@@ -18,9 +18,8 @@ int main(int argc, char *argv[]){
 	m->setContentPath("/Users/ahartens/Dropbox/Beuth/Semester_6/SE2/RainyDayProject/RainyDay/src/memory/content.csv");
 	m->setupGame();
    	m->showWindow();
-   	m->startGame();
+   	// m->startGame();
 
     a.exec();
-    std::cout << "Hello there\n";
 	return 0;
 }
