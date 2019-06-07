@@ -1,6 +1,6 @@
 #include "memory_view.h"
-// #include "render_window.h"
-#include "selectable_grid.h"
+// #include "kinect_timer_window.h"
+#include "grid.h"
 #include <iostream>
 
 #define COLOR_DEFAULT  std::string("#d1d8e0")
@@ -15,18 +15,15 @@ void MemoryView::initGameView(MemoryInfo* info, GridInfo* dimensions){
 
 void MemoryView::_drawGrid(){
 	_makeGridCellInfos();
-	_window = new RenderWindow();
-	_grid = new SelectableGrid(_dimensions->n_rows, _dimensions->n_cols);
+	_grid = new Grid(_dimensions->n_rows, _dimensions->n_cols);
 	_grid->setCellsInfos(cellsInfo);
-	_window->setRenderArea(_grid);
-	_window->setTitle("hello");
 }
 
 void MemoryView::_makeGridCellInfos(){
 	int i = 0;
 	for (int r=0;r<_dimensions->n_rows;r++){
 		for (int c=0;c<_dimensions->n_cols;c++){
-			SelectableGridCell* cell = new SelectableGridCell();
+			GridCell* cell = new GridCell();
 			cell->color = COLOR_DEFAULT;
 			cell->text = _ginfo->cards[i]->text;
 			std::cout << "printing text " << cell->text << "\n";
@@ -59,16 +56,6 @@ void MemoryView::refreshCellSelections(){
 		}
 	}
 	_grid->update();
-}
-
-
-void MemoryView::setDelegate(RenderWindowDelegate* d){
-	_window->delegate = d;
-}
-
-
-void MemoryView::showWindow(){
-	_window->show();
 }
 
 void MemoryView::setSelectedRow(int r){

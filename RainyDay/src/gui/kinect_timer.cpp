@@ -2,7 +2,7 @@
 #include <QDebug>
 #include <QApplication>
 
-KinectTimer::KinectTimer(RenderWindow* window){
+KinectTimer::KinectTimer(KinectTimerWindow* window){
 	_window = window;
 	timer = new QTimer(this);
 

@@ -4,8 +4,8 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 find_package(Qt5 COMPONENTS REQUIRED Core Gui Widgets)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
-set(project_sources selectable_grid.cpp render_window.cpp)
-set(project_headers selectable_grid.h render_window.h)
+set(project_sources grid.cpp kinect_timer_window.cpp kinect_timer.cpp)
+set(project_headers grid.h kinect_timer_window.h kinect_timer.h)
 
 # wrap the ui file to a c++ header
 qt5_wrap_cpp(moc_sources ${project_headers})

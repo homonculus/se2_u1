@@ -1,8 +1,8 @@
-#ifndef RENDERWINDOW_H
-#define RENDERWINDOW_H
+#ifndef KinectTimerWindow_H
+#define KinectTimerWindow_H
 
 #include <QWidget>
-#include "selectable_grid.h"
+#include "grid.h"
 #include <QtGui>
 
 QT_BEGIN_NAMESPACE
@@ -22,20 +22,20 @@ class KinectTimerEvent : public QEvent{
 		int m_customData2;
 };
 
-class RenderWindowDelegate{
+class KinectTimerWindowDelegate{
 public:
-	virtual void renderWindowControllerDidChange(int e) = 0;
+	virtual void KinectTimerWindowControllerDidChange(int e) = 0;
 };
 
 //! [0]
-class RenderWindow : public QWidget{
+class KinectTimerWindow : public QWidget{
     Q_OBJECT
 
 public:
-    RenderWindow();
+    KinectTimerWindow();
     void setTitle(std::string title);
-    void setRenderArea(SelectableGrid* ra);
-	RenderWindowDelegate* delegate;
+    void setRenderArea(Grid* ra);
+	KinectTimerWindowDelegate* delegate;
 	void postMyCustomEvent(const int customData1, const int customData2);
 	void handleMyCustomEvent(const KinectTimerEvent *event);
 
@@ -45,7 +45,7 @@ protected:
 
 private:
 	QLabel *_label;
-    SelectableGrid* _renderArea;
+    Grid* _renderArea;
 };
 
-#endif // RENDERWINDOW_H
+#endif // KinectTimerWindow_H
