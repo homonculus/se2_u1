@@ -6,9 +6,9 @@
 #include "team_controller.h"
 #include <string>
 #include <vector>
-#include "render_window.h"
+#include "kinect_timer_window.h"
 
-class MemoryController: public TeamControllerDelegate, public RenderWindowDelegate{
+class MemoryController: public TeamControllerDelegate{
 	public:
 		std::string path_content;
 		void setContentPath(std::string path);
@@ -23,7 +23,7 @@ class MemoryController: public TeamControllerDelegate, public RenderWindowDelega
 		MemoryInfo* getGameInfo(){return _model->getGameInfo();};
 		bool testing;
 		void showWindow();
-		void renderWindowControllerDidChange(int e);
+		KinectTimerWindow* getWindow(){ return _window; };
 
 	private:
 		std::vector<MemoryCard*> _all_cards;
@@ -33,6 +33,8 @@ class MemoryController: public TeamControllerDelegate, public RenderWindowDelega
 		MemoryView* _view;
 		TeamController* _input;
 		std::vector<int> _keyboardInput;
+		KinectTimerWindow* _window;
+
 };
 
 

@@ -1,5 +1,5 @@
-#ifndef SELECTABLEGRID_H
-#define SELECTABLEGRID_H
+#ifndef Grid_H
+#define Grid_H
 
 #include <QBrush>
 #include <QPen>
@@ -10,22 +10,22 @@
 #include "util.h"
 
 
-struct SelectableGridCell{
+struct GridCell{
     std::string color;
     std::string text;
 };
 
-class SelectableGrid : public QWidget
+class Grid : public QWidget
 {
     Q_OBJECT
 
 public:
-    SelectableGrid(int r, int c);
+    Grid(int r, int c);
     QSize minimumSizeHint() const override;
     QSize sizeHint() const override;
     void setDimensions(int r, int c);
-    void setCellsInfos(std::vector<SelectableGridCell*> ci);
-    std::vector<SelectableGridCell*> cellsInfo;
+    void setCellsInfos(std::vector<GridCell*> ci);
+    std::vector<GridCell*> cellsInfo;
 
 protected:
     void paintEvent(QPaintEvent *event) override;
@@ -42,10 +42,11 @@ private:
     struct size _card_size;
     struct point _card_indent;
     void _calculateCardSize();
-    void _drawCard(QPainter *painter, SelectableGridCell* cellInfo);
+    void _drawCard(QPainter *painter, GridCell* cellInfo);
     void _setBrushColor(std::string s);
     void _setPen();
     void _drawFrame(QPainter *painter);
+    
 };
 
-#endif // SELECTABLEGRID_H
+#endif // Grid_H
