@@ -3,8 +3,8 @@ project(RainyDay LANGUAGES CXX)
 find_package(Qt5 COMPONENTS REQUIRED Core Gui Widgets)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
-set(project_sources src/mainwindow.cpp src/main.cpp)
-set(project_headers src/mainwindow.h)
+set(project_sources src/mainwindow.cpp src/main.cpp src/kinect_timer.cpp)
+set(project_headers src/mainwindow.h src/kinect_timer.h)
 set(project_ui src/mainwindow.ui)
 
 # wrap the ui file to a c++ header

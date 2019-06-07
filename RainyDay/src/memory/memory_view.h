@@ -14,7 +14,7 @@ class MemoryView{
 		void setSelectedColumn(int c);
 		void setSelectedRow(int r);
 		void setDelegate(RenderWindowDelegate* d);
-
+		RenderWindow* getWindow(){ return _window; };
 		
 	private:
 		MemoryInfo* _ginfo;

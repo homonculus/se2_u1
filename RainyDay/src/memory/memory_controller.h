@@ -24,6 +24,7 @@ class MemoryController: public TeamControllerDelegate, public RenderWindowDelega
 		bool testing;
 		void showWindow();
 		void renderWindowControllerDidChange(int e);
+		RenderWindow* getWindow(){ return _view->getWindow(); };
 
 	private:
 		std::vector<MemoryCard*> _all_cards;

@@ -5,6 +5,8 @@
 #include "memory_controller.h"
 #include <iostream>
 
+#include "kinect_timer.h"
+
 #include <string>
 
 int main(int argc, char *argv[]){
@@ -20,7 +22,8 @@ int main(int argc, char *argv[]){
    	m->showWindow();
    	m->startGame();
 
+   	KinectTimer timer(m->getWindow());
+
     a.exec();
-    std::cout << "Hello there\n";
 	return 0;
 }

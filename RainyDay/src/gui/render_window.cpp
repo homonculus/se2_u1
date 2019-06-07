@@ -34,3 +34,28 @@ void RenderWindow::keyPressEvent(QKeyEvent *event){
     delegate->renderWindowControllerDidChange(event->key());
 
  }
+
+
+ void RenderWindow::postMyCustomEvent(const int customData1, const int customData2)
+{   
+    // This method (postMyCustomEvent) can be called from any thread
+
+    QApplication::postEvent(this, new KinectTimerEvent(customData1, customData2));   
+}
+
+void RenderWindow::customEvent(QEvent * event)
+{
+    // When we get here, we've crossed the thread boundary and are now
+    // executing in the Qt object's thread
+
+ 	std::cout << "CUSTOM EVENT FIRED\n";
+
+
+    // use more else ifs to handle other custom events
+}
+
+void RenderWindow::handleMyCustomEvent(const KinectTimerEvent *event)
+{
+    // Now you can safely do something with your Qt objects.
+    // Access your custom data using event->getCustomData1() etc.
+}
