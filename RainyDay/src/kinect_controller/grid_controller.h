@@ -11,14 +11,13 @@ public:
 
 class GridController: public KinectControllerDelegate{
 public:
-	GridController(int _n_rows, int _n_cols);
-	bool start();
-	bool end();
 	int n_cols;
 	int n_rows;
+	GridController(int _n_rows, int _n_cols);
 	int kinectControllerReceivedImage(cv::Mat depthImage);
 	GridControllerDelegate* delegate;
-
+	bool start();
+	bool end();
 
 private:
 	KinectController* _kinectController;

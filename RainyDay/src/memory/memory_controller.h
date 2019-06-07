@@ -11,6 +11,7 @@
 class MemoryController: public TeamControllerDelegate{
 	public:
 		std::string path_content;
+		bool testing;
 		void setContentPath(std::string path);
 		void setDimensions(GridInfo* dims);
 		void teamControllerDidChange(TeamControllerEventInfo e);
@@ -19,11 +20,10 @@ class MemoryController: public TeamControllerDelegate{
 		void startGame();
 		void endGame();
 		bool gameIsOver();
-		MemoryGameEventFlags getGameStatusFlag(){return _model->getGameStatusFlag();};
-		MemoryInfo* getGameInfo(){return _model->getGameInfo();};
-		bool testing;
 		void showWindow();
 		KinectTimerWindow* getWindow(){ return _window; };
+		MemoryGameEventFlags getGameStatusFlag(){return _model->getGameStatusFlag();};
+		MemoryInfo* getGameInfo(){return _model->getGameInfo();};
 
 	private:
 		std::vector<MemoryCard*> _all_cards;
@@ -34,7 +34,11 @@ class MemoryController: public TeamControllerDelegate{
 		TeamController* _input;
 		std::vector<int> _keyboardInput;
 		KinectTimerWindow* _window;
+		void _setupModel();
+		void _setupView();
+		void _setupInput();
+		void _setupWindow();
+		void _keyboardInput(int e);
 };
-
 
 #endif // MEMORYCONTROLLER_H

@@ -10,22 +10,32 @@ void MemoryController::setDimensions(GridInfo* dims){
 }
 
 void MemoryController::setupGame(){
-	// setup model
+	_setupModel();
+	_setupView();
+	_setupInput();
+	_setupWindow();
+}
+
+void MemoryController::_setupModel(){
 	_model = new MemoryModel();
 	_model->testing = true;
 	_model->readAllCardsFromFile(path_content);
 	_model->initGameInfo(_dimensions->n);
+}
 
-	// setup view
+void MemoryController::_setupView(){
 	_view = new MemoryView();
 	_view->initGameView(_model->getGameInfo(), _dimensions);
 	_view->refreshCellSelections();
+}
 
-	// setup team controller (will conversion kinect -> team moves)
+void MemoryController::_setupInput(){
 	_input = new TeamController(_dimensions);
 	_input->delegate = this;
-	
-	// setup window
+}
+
+void MemoryController::_setupWindow(){
+	// must be before setupInput
 	_window = new KinectTimerWindow();
 	_window->delegate = (KinectTimerWindowDelegate*)_input; // timer events go directly to team controller
 	_window->setRenderArea(_view->getGrid());
@@ -75,4 +85,32 @@ bool MemoryController::gameIsOver(){
 
 void MemoryController::showWindow(){
 	_window->show();
+}
+
+void MemoryController::_keyboardInput(int e){
+	// can be removed, don't want keyboard commands
+	int v = e-49;
+	if (v >-1 && v < 10){
+		if (_keyboardInput.size() == 0){
+			if (v < _dimensions->n_cols){
+				TeamControllerEventInfo event = {TC_COLUMNSELECTED, v, 0};
+				teamControllerDidChange(event);
+				_keyboardInput.push_back(v);
+			}
+		}
+		else if (_keyboardInput.size() == 1){
+			if (v < _dimensions->n_rows){
+				TeamControllerEventInfo event = {TC_ROWSELECTED, v, 0};
+				teamControllerDidChange(event);
+				_keyboardInput.push_back(v);
+			}
+		}
+		else if (_keyboardInput.size() == 2){
+			_keyboardInput.clear();
+			_view->setSelectedRow(-1);
+			_view->setSelectedColumn(-1);
+			_view->refreshCellSelections();
+			// int command = _keyboardInput[1]*_dimensions->n_cols + _keyboardInput[0];
+		}
+	}
 }
