@@ -2,7 +2,7 @@
 #define MEMORYVIEW_H
 
 #include "memory_info.h"
-// #include "grid.h"
+#include "grid.h"
 
 class MemoryView{
 	public:

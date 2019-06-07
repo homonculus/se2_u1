@@ -1,5 +1,5 @@
-#ifndef GridController_H
-#define GridController_H
+#ifndef GRIDCONTROLLER_H
+#define GRIDCONTROLLER_H
 
 #include <vector>
 #include "kinect_controller.h"
@@ -28,4 +28,4 @@ private:
 
 };
 
-#endif // GridController
+#endif // GRIDCONTROLLER_H

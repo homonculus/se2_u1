@@ -1,5 +1,5 @@
-#ifndef Grid_H
-#define Grid_H
+#ifndef GRID_H
+#define GRID_H
 
 #include <QBrush>
 #include <QPen>
@@ -49,4 +49,4 @@ private:
     
 };
 
-#endif // Grid_H
+#endif // GRID_H

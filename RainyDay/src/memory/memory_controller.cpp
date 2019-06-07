@@ -27,7 +27,7 @@ void MemoryController::setupGame(){
 	
 	// setup window
 	_window = new KinectTimerWindow();
-	_window->delegate = _input;
+	_window->delegate = (KinectTimerWindowDelegate*)_input; // timer events go directly to team controller
 	_window->setRenderArea(_view->getGrid());
 	_window->setTitle("hello");
 }

@@ -14,13 +14,13 @@ struct TeamControllerEventInfo{
 	int team;
 };
 
-class TeamControllerDelegate : public KinectTimerWindowDelegate{
-public:
-	virtual void teamControllerDidChange(TeamControllerEventInfo e) = 0;
+class TeamControllerDelegate{
+	public:
+		virtual void teamControllerDidChange(TeamControllerEventInfo e) = 0;
 };
 
 
-class TeamController:GridControllerDelegate{
+class TeamController:public GridControllerDelegate, public KinectTimerWindowDelegate{
 	public:
 		TeamController(GridInfo* dimensions);
 		TeamControllerDelegate* delegate;

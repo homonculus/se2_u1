@@ -1,5 +1,5 @@
-#ifndef KinectTimerWindow_H
-#define KinectTimerWindow_H
+#ifndef KINECTTIMERWINDOW_H
+#define KINECTTIMERWINDOW_H
 
 #include <QWidget>
 #include "grid.h"
@@ -48,4 +48,4 @@ private:
     Grid* _renderArea;
 };
 
-#endif // KinectTimerWindow_H
+#endif // KINECTTIMERWINDOW_H

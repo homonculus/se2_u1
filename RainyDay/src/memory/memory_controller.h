@@ -34,7 +34,6 @@ class MemoryController: public TeamControllerDelegate{
 		TeamController* _input;
 		std::vector<int> _keyboardInput;
 		KinectTimerWindow* _window;
-
 };
 
 
