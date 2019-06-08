@@ -4,6 +4,7 @@
 #include "grid_controller.h"
 #include "game.h"
 #include "kinect_timer_window.h"
+#include <vector>
 
 
 enum TeamControllerEventFlag{TC_COLUMNSELECTED, TC_ROWSELECTED, TC_CELLSELECTED};
@@ -20,17 +21,15 @@ class TeamControllerDelegate{
 };
 
 
-class TeamController:public GridControllerDelegate, public KinectTimerWindowDelegate{
+class TeamController{
 	public:
 		TeamController(GridInfo* dimensions);
 		TeamControllerDelegate* delegate;
-		void gridControllerDidChange(std::vector<int> cells);
 		void start();
 		void KinectTimerWindowControllerDidChange(int e);
 		
 	private:
 		GridInfo* _dimensions;
-		GridController* _gridController;
 };
 
 # endif// TeamController_H

@@ -13,7 +13,8 @@ void MemoryController::setupGame(){
 	_setupModel();
 	_setupView();
 	_setupInput();
-	_setupWindow();
+	_setupParamWindow();
+	_setupGameWindow();
 }
 
 void MemoryController::_setupModel(){
@@ -34,12 +35,17 @@ void MemoryController::_setupInput(){
 	_input->delegate = this;
 }
 
-void MemoryController::_setupWindow(){
+void MemoryController::_setupParamWindow(){
 	// must be before setupInput
-	_window = new KinectTimerWindow();
-	_window->delegate = (KinectTimerWindowDelegate*)_input; // timer events go directly to team controller
-	_window->setRenderArea(_view->getGrid());
-	_window->setTitle("hello");
+	_paramWindow = new MemoryParamWindow();
+}
+
+void MemoryController::_setupGameWindow(){
+	// must be before setupInput
+	_gameWindow = new KinectTimerWindow();
+	_gameWindow->delegate = (KinectTimerWindowDelegate*)this; // timer events go directly to team controller
+	_gameWindow->setRenderArea(_view->getGrid());
+	_gameWindow->setTitle("Memory");
 }
 
 void MemoryController::startGame(){
@@ -84,10 +90,20 @@ bool MemoryController::gameIsOver(){
 }
 
 void MemoryController::showWindow(){
-	_window->show();
+	_paramWindow->show();
+	_gameWindow->show();
 }
 
-void MemoryController::_keyboardInput(int e){
+
+void MemoryController::KinectTimerWindowControllerDidChange(int e){
+	std::cout << "MemoryController::KinectTimerWindowControllerDidChange : " << e << "\n";
+}
+
+void MemoryController::KinectTimerWindowTimerFired(){
+	std::cout << "MemoryController::KinectTimerWindowTimerFired : \n";
+}
+
+void MemoryController::_keyboardInputOccurred(int e){
 	// can be removed, don't want keyboard commands
 	int v = e-49;
 	if (v >-1 && v < 10){

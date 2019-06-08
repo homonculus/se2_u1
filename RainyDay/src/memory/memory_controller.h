@@ -7,8 +7,9 @@
 #include <string>
 #include <vector>
 #include "kinect_timer_window.h"
+#include "memory_param_window.h"
 
-class MemoryController: public TeamControllerDelegate{
+class MemoryController: public TeamControllerDelegate, public KinectTimerWindowDelegate{
 	public:
 		std::string path_content;
 		bool testing;
@@ -21,7 +22,9 @@ class MemoryController: public TeamControllerDelegate{
 		void endGame();
 		bool gameIsOver();
 		void showWindow();
-		KinectTimerWindow* getWindow(){ return _window; };
+		void KinectTimerWindowControllerDidChange(int e);
+		void KinectTimerWindowTimerFired();
+		KinectTimerWindow* getWindow(){ return _gameWindow; };
 		MemoryGameEventFlags getGameStatusFlag(){return _model->getGameStatusFlag();};
 		MemoryInfo* getGameInfo(){return _model->getGameInfo();};
 
@@ -33,12 +36,14 @@ class MemoryController: public TeamControllerDelegate{
 		MemoryView* _view;
 		TeamController* _input;
 		std::vector<int> _keyboardInput;
-		KinectTimerWindow* _window;
+		MemoryParamWindow* _paramWindow;
+		KinectTimerWindow* _gameWindow;
 		void _setupModel();
 		void _setupView();
 		void _setupInput();
-		void _setupWindow();
-		void _keyboardInput(int e);
+		void _setupParamWindow();
+		void _setupGameWindow();
+		void _keyboardInputOccurred(int e);
 };
 
 #endif // MEMORYCONTROLLER_H

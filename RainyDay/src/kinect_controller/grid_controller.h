@@ -4,20 +4,16 @@
 #include <vector>
 #include "kinect_controller.h"
 
-class GridControllerDelegate{
-public:
-	virtual void gridControllerDidChange(std::vector<int> cells) = 0;
-};
+enum GridCellStatus{GC_INACTIVE, GC_ACTIVE_1, GC_ACTIVE_2};
 
-class GridController: public KinectControllerDelegate{
+class GridController{
 public:
 	int n_cols;
 	int n_rows;
 	GridController(int _n_rows, int _n_cols);
-	int kinectControllerReceivedImage(cv::Mat depthImage);
-	GridControllerDelegate* delegate;
 	bool start();
 	bool end();
+	// std::vector<int> getCellActivity();
 
 private:
 	KinectController* _kinectController;

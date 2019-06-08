@@ -1,5 +1,3 @@
-
-
 #ifndef KINECTTIMER_H
 #define KINECTTIMER_H
 

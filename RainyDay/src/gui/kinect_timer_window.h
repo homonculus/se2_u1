@@ -25,6 +25,7 @@ class KinectTimerEvent : public QEvent{
 class KinectTimerWindowDelegate{
 public:
 	virtual void KinectTimerWindowControllerDidChange(int e) = 0;
+	virtual void KinectTimerWindowTimerFired() = 0;
 };
 
 //! [0]

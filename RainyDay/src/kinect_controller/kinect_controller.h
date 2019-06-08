@@ -8,17 +8,11 @@
 #include <opencv2/opencv.hpp>
 
 
-class KinectControllerDelegate{
-public:
-	virtual int kinectControllerReceivedImage(cv::Mat depthImage) = 0;
-
-};
-
 class KinectController{
 public:
 	int startDevice();
+	cv::Mat getDepthImage();
 	void closeDevice();
-	KinectControllerDelegate* delegate;
 	bool shutdown;
 
 private:
@@ -28,7 +22,6 @@ private:
 	libfreenect2::SyncMultiFrameListener* _listener;
 	libfreenect2::FrameMap _frames;
 	int _getFrame();
-
 };
 
 #endif // KINECT_CONTROLLER_H

@@ -8,7 +8,7 @@
 
 
 KinectTimerWindow::KinectTimerWindow(){
-        setWindowTitle(tr("Basic Drawing"));
+    setWindowTitle(tr("Basic Drawing"));
 
 }
 
@@ -28,34 +28,23 @@ void KinectTimerWindow::setRenderArea(Grid* ra){
     setLayout(mainLayout);
 }
 
-
 void KinectTimerWindow::keyPressEvent(QKeyEvent *event){
     _label->setText(event->text());
     delegate->KinectTimerWindowControllerDidChange(event->key());
 
- }
+}
 
-
- void KinectTimerWindow::postMyCustomEvent(const int customData1, const int customData2)
-{   
-    // This method (postMyCustomEvent) can be called from any thread
-
+void KinectTimerWindow::postMyCustomEvent(const int customData1, const int customData2){   
     QApplication::postEvent(this, new KinectTimerEvent(customData1, customData2));   
 }
 
-void KinectTimerWindow::customEvent(QEvent * event)
-{
-    // When we get here, we've crossed the thread boundary and are now
-    // executing in the Qt object's thread
+void KinectTimerWindow::customEvent(QEvent * event){
 
+    delegate->KinectTimerWindowTimerFired();
  	std::cout << "CUSTOM EVENT FIRED\n";
-
-
-    // use more else ifs to handle other custom events
 }
 
-void KinectTimerWindow::handleMyCustomEvent(const KinectTimerEvent *event)
-{
+void KinectTimerWindow::handleMyCustomEvent(const KinectTimerEvent *event){
     // Now you can safely do something with your Qt objects.
     // Access your custom data using event->getCustomData1() etc.
 }
