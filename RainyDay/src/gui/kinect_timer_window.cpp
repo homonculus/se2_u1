@@ -35,13 +35,13 @@ void KinectTimerWindow::keyPressEvent(QKeyEvent *event){
 }
 
 void KinectTimerWindow::postMyCustomEvent(const int customData1, const int customData2){   
-    QApplication::postEvent(this, new KinectTimerEvent(customData1, customData2));   
+    // QApplication::postEvent(this, new KinectTimerEvent(customData1, customData2));   
 }
 
 void KinectTimerWindow::customEvent(QEvent * event){
 
-    delegate->KinectTimerWindowTimerFired();
- 	std::cout << "CUSTOM EVENT FIRED\n";
+  //   delegate->KinectTimerWindowTimerFired();
+ 	// std::cout << "CUSTOM EVENT FIRED\n";
 }
 
 void KinectTimerWindow::handleMyCustomEvent(const KinectTimerEvent *event){

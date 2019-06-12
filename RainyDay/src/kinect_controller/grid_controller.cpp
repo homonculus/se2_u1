@@ -5,7 +5,6 @@ GridController::GridController(int _n_rows, int _n_cols){
 	n_rows = _n_rows;
 	n_cols = _n_cols;
 	_grid.reserve(_n_rows*_n_cols);
-	_kinectController = new KinectController();
 
 	for (int r=0;r<_n_rows;r++){
 		for (int c=0;c<_n_cols;c++){
@@ -15,7 +14,6 @@ GridController::GridController(int _n_rows, int _n_cols){
 }
 
 bool GridController::start(){
-	_kinectController->startDevice();
 	return true;
 }
 

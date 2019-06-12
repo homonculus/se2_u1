@@ -29,8 +29,6 @@ class MemoryController: public TeamControllerDelegate, public KinectTimerWindowD
 		MemoryInfo* getGameInfo(){return _model->getGameInfo();};
 
 	private:
-		std::vector<MemoryCard*> _all_cards;
-		std::vector<MemoryCard*> _game_cards;
 		GridInfo* _dimensions;
 		MemoryModel* _model;
 		MemoryView* _view;
@@ -38,6 +36,7 @@ class MemoryController: public TeamControllerDelegate, public KinectTimerWindowD
 		std::vector<int> _keyboardInput;
 		MemoryParamWindow* _paramWindow;
 		KinectTimerWindow* _gameWindow;
+		KinectController* _kinectController;
 		void _setupModel();
 		void _setupView();
 		void _setupInput();

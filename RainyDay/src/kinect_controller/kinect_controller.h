@@ -8,10 +8,16 @@
 #include <opencv2/opencv.hpp>
 
 
+struct KinectImage{
+	unsigned char *data;
+	int width;
+	int height;
+};
+
 class KinectController{
 public:
 	int startDevice();
-	cv::Mat getDepthImage();
+	KinectImage* getDepthImage();
 	void closeDevice();
 	bool shutdown;
 
@@ -19,9 +25,15 @@ private:
 	bool protonect_paused;
 	libfreenect2::Freenect2Device* _dev;
 	libfreenect2::Registration* _registration;
-	libfreenect2::SyncMultiFrameListener* _listener;
+	// libfreenect2::SyncMultiFrameListener* _listener;
 	libfreenect2::FrameMap _frames;
 	int _getFrame();
+	KinectImage *_image;
+	libfreenect2::FrameMap frames;
+	libfreenect2::FrameListener *myListener;
+ 	// libfreenect2::Freenect2Device *devtopause;
+	// libfreenect2::SyncMultiFrameListener listener(3);
+
 };
 
 #endif // KINECT_CONTROLLER_H

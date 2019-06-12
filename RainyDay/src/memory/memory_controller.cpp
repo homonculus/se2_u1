@@ -15,6 +15,9 @@ void MemoryController::setupGame(){
 	_setupInput();
 	_setupParamWindow();
 	_setupGameWindow();
+	// _kinectController = new KinectController();
+	// _kinectController->startDevice();
+	std::cout << "MemoryController::finished starting device\n";
 }
 
 void MemoryController::_setupModel(){
@@ -100,7 +103,13 @@ void MemoryController::KinectTimerWindowControllerDidChange(int e){
 }
 
 void MemoryController::KinectTimerWindowTimerFired(){
-	std::cout << "MemoryController::KinectTimerWindowTimerFired : \n";
+
+
+	// std::cout << "MemoryController::KinectTimerWindowTimerFired : \n";
+	// KinectImage* image = _kinectController->getDepthImage();
+	// std::cout << "MemoryController::KinectTimerWindowTimerFired : \n";
+
+	// _paramWindow->setCallibrationImage(image->data, image->width, image->height);
 }
 
 void MemoryController::_keyboardInputOccurred(int e){

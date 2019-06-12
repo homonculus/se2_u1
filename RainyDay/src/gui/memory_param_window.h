@@ -7,6 +7,8 @@
 QT_BEGIN_NAMESPACE
 class QLabel;
 class QComboBox;
+class QGroupBox;
+
 QT_END_NAMESPACE
 
 class MemoryCallibrationArea : public QWidget{
@@ -28,6 +30,7 @@ class MemoryParamWindow : public QWidget{
     Q_OBJECT
     public:
         MemoryParamWindow();
+        void setCallibrationImage(unsigned char* data, int width, int height);
 
     private slots:
         void rowChanged();
@@ -35,10 +38,15 @@ class MemoryParamWindow : public QWidget{
 
     private:
         MemoryCallibrationArea *callibrationArea;
-        QLabel *rowLabel;
-        QComboBox *rowComboBox;
-        QLabel *colLabel;
-        QComboBox *colComboBox;
+        QLabel *_rowLabel;
+        QComboBox *_rowComboBox;
+        QLabel *_colLabel;
+        QComboBox *_colComboBox;
+        QGroupBox *_dimensionsBox;
+        QGroupBox *_callibrationBox;
+        QLabel *_callibrationLabel;
+        void _createDimensionsBox();
+        void _createCallibrationBox();
 
         // QCheckBox *transformationsCheckBox;
 };

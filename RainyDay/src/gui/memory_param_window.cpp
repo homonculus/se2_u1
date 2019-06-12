@@ -9,53 +9,93 @@ MemoryParamWindow::MemoryParamWindow()
 {
     setWindowTitle(tr("Memory Parameters"));
 
-    // callibrationArea = new MemoryCallibrationArea;
+    _createDimensionsBox();
+    _createCallibrationBox();
+    connect(_rowComboBox, SIGNAL(activated(int)), this, SLOT(rowChanged()));
+    connect(_colComboBox, SIGNAL(activated(int)), this, SLOT(colChanged()));
 
 
 
-    rowComboBox = new QComboBox;
-    rowComboBox->addItem(tr("2"),0);
-    rowComboBox->addItem(tr("3"),1);
-    rowComboBox->addItem(tr("4"),2);
-    rowComboBox->addItem(tr("5"),2);
-    rowLabel = new QLabel(tr("&Anzahl Reien:"));
-    rowLabel->setBuddy(rowComboBox);
 
 
+    // QGridLayout *mainLayout = new QGridLayout;
+    // mainLayout->setColumnStretch(3, 1);
+    // mainLayout->addWidget(_rowLabel,0,0,Qt::AlignRight);// row column
+    // mainLayout->addWidget(_rowComboBox,0,1);
 
-    colComboBox = new QComboBox;
-    colComboBox->addItem(tr("2"),0);
-    colComboBox->addItem(tr("3"),1);
-    colComboBox->addItem(tr("4"),2);
-    colComboBox->addItem(tr("5"),2);
-    colLabel = new QLabel(tr("&Anzahl Spalten:"));
-    colLabel->setBuddy(colComboBox);
-
-    connect(rowComboBox, SIGNAL(activated(int)), this, SLOT(rowChanged()));
-    connect(colComboBox, SIGNAL(activated(int)), this, SLOT(colChanged()));
+    // mainLayout->addWidget(_colLabel,1,0,Qt::AlignRight);
+    // mainLayout->addWidget(_colComboBox,1,1);
 
 
     QGridLayout *mainLayout = new QGridLayout;
     mainLayout->setColumnStretch(3, 1);
-    mainLayout->addWidget(rowLabel,0,0,Qt::AlignRight);// row column
-    mainLayout->addWidget(rowComboBox,0,1);
+    mainLayout->addWidget(_dimensionsBox,0,0);// row column
+    mainLayout->addWidget(_callibrationBox,1,0);
 
-    mainLayout->addWidget(colLabel,1,0,Qt::AlignRight);
-    mainLayout->addWidget(colComboBox,1,1);
+    // mainLayout->addWidget(_colLabel,1,0,Qt::AlignRight);
+    // mainLayout->addWidget(_colComboBox,1,1);
 
 
-    // mainLayout->addWidget(callibrationArea, 3, 0, 1, 4); // fromrow fromcolumn nrows ncols
 
     setLayout(mainLayout);
 
 }
 
+void MemoryParamWindow::_createDimensionsBox(){
+    _dimensionsBox = new QGroupBox(tr("Spiel Dimensionen"));
+    
+    _rowComboBox = new QComboBox;
+    _rowComboBox->addItem(tr("2"),0);
+    _rowComboBox->addItem(tr("3"),1);
+    _rowComboBox->addItem(tr("4"),2);
+    _rowComboBox->addItem(tr("5"),2);
+    _rowLabel = new QLabel(tr("&Anzahl Reien:"));
+    _rowLabel->setBuddy(_rowComboBox);
+
+    _colComboBox = new QComboBox;
+    _colComboBox->addItem(tr("2"),0);
+    _colComboBox->addItem(tr("3"),1);
+    _colComboBox->addItem(tr("4"),2);
+    _colComboBox->addItem(tr("5"),2);
+    _colLabel = new QLabel(tr("&Anzahl Spalten:"));
+    _colLabel->setBuddy(_colComboBox);
+
+    QGridLayout *layout = new QGridLayout;
+    layout->addWidget(_rowLabel,0,0,Qt::AlignRight);// row column
+    layout->addWidget(_rowComboBox,0,1);
+    layout->addWidget(_colLabel,1,0,Qt::AlignRight);
+    layout->addWidget(_colComboBox,1,1);
+    layout->setColumnStretch(1, 10);
+
+    _dimensionsBox->setLayout(layout);
+}
+
+void MemoryParamWindow::_createCallibrationBox(){
+    _callibrationBox = new QGroupBox(tr("Kalibrierung"));
+    
+    _callibrationLabel = new QLabel;
+   
+
+    QGridLayout *layout = new QGridLayout;
+    layout->addWidget(_callibrationLabel,0,0);// row column
+
+    // layout->setColumnStretch(1, 10);
+
+    _callibrationBox->setLayout(layout);
+}
+
+void MemoryParamWindow::setCallibrationImage(unsigned char* data, int width, int height){
+    QPixmap pix= QPixmap::fromImage(QImage(data, width, height, QImage::Format_RGB888).rgbSwapped());
+    _callibrationLabel->setPixmap(pix);
+}
+
+
 void MemoryParamWindow::rowChanged(){
-    std::cout << "ROW CHANGED : " << rowComboBox->itemData(rowComboBox->currentIndex(), IdRole).toInt() << "\n";
+    std::cout << "ROW CHANGED : " << _rowComboBox->itemData(_rowComboBox->currentIndex(), IdRole).toInt() << "\n";
 }
 
 void MemoryParamWindow::colChanged(){
-    std::cout << "ROW CHANGED : " << rowComboBox->itemData(rowComboBox->currentIndex(), IdRole).toInt() << "\n";
+    std::cout << "ROW CHANGED : " << _rowComboBox->itemData(_rowComboBox->currentIndex(), IdRole).toInt() << "\n";
 }
 
 

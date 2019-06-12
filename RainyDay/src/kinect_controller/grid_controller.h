@@ -16,7 +16,6 @@ public:
 	// std::vector<int> getCellActivity();
 
 private:
-	KinectController* _kinectController;
 	bool protonect_paused;
 	std::vector<int> _grid;
 	int _thresholdForCell(cv::Mat depthImage, int idx_start_row, int idx_end_row, int idx_start_col, int idx_end_col);
