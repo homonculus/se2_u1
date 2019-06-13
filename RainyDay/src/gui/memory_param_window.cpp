@@ -14,10 +14,6 @@ MemoryParamWindow::MemoryParamWindow()
     connect(_rowComboBox, SIGNAL(activated(int)), this, SLOT(rowChanged()));
     connect(_colComboBox, SIGNAL(activated(int)), this, SLOT(colChanged()));
 
-
-
-
-
     // QGridLayout *mainLayout = new QGridLayout;
     // mainLayout->setColumnStretch(3, 1);
     // mainLayout->addWidget(_rowLabel,0,0,Qt::AlignRight);// row column
@@ -26,19 +22,15 @@ MemoryParamWindow::MemoryParamWindow()
     // mainLayout->addWidget(_colLabel,1,0,Qt::AlignRight);
     // mainLayout->addWidget(_colComboBox,1,1);
 
-
     QGridLayout *mainLayout = new QGridLayout;
     mainLayout->setColumnStretch(3, 1);
     mainLayout->addWidget(_dimensionsBox,0,0);// row column
     mainLayout->addWidget(_callibrationBox,1,0);
-
+    this->setMouseTracking(true);
     // mainLayout->addWidget(_colLabel,1,0,Qt::AlignRight);
     // mainLayout->addWidget(_colComboBox,1,1);
 
-
-
     setLayout(mainLayout);
-
 }
 
 void MemoryParamWindow::_createDimensionsBox(){
@@ -73,7 +65,7 @@ void MemoryParamWindow::_createDimensionsBox(){
 void MemoryParamWindow::_createCallibrationBox(){
     _callibrationBox = new QGroupBox(tr("Kalibrierung"));
     
-    _callibrationLabel = new QLabel;
+    _callibrationLabel = new MemoryCallibrationLabel();
    
 
     QGridLayout *layout = new QGridLayout;
@@ -84,11 +76,11 @@ void MemoryParamWindow::_createCallibrationBox(){
     _callibrationBox->setLayout(layout);
 }
 
-void MemoryParamWindow::setCallibrationImage(unsigned char* data, int width, int height){
-    QPixmap pix= QPixmap::fromImage(QImage(data, width, height, QImage::Format_RGB888).rgbSwapped());
+void MemoryParamWindow::setCallibrationImage(cv::Mat mat){
+    QPixmap pix = QPixmap::fromImage(QImage((unsigned char*) mat.data, mat.cols, mat.rows, QImage::Format_RGB32));
+    // QPixmap pix= QPixmap::fromImage(QImage(data, width, height, QImage::Format_RGB888).rgbSwapped());
     _callibrationLabel->setPixmap(pix);
 }
-
 
 void MemoryParamWindow::rowChanged(){
     std::cout << "ROW CHANGED : " << _rowComboBox->itemData(_rowComboBox->currentIndex(), IdRole).toInt() << "\n";
@@ -97,5 +89,31 @@ void MemoryParamWindow::rowChanged(){
 void MemoryParamWindow::colChanged(){
     std::cout << "ROW CHANGED : " << _rowComboBox->itemData(_rowComboBox->currentIndex(), IdRole).toInt() << "\n";
 }
+
+void MemoryParamWindow::handleMyCustomEvent(const KinectEvent *event){
+    setCallibrationImage(event->getCustomData2());
+}
+
+// void MemoryParamWindow::mouseMoveEvent(QMouseEvent *e){
+//     std::cout << "MemoryParamWindow :: mouseMoveEvent event XY : " << e->x() << ", " << e->y() << " \n";
+// }
+
+// void MemoryParamWindow::mouseReleaseEvent(QMouseEvent *e){
+//     std::cout << "MemoryParamWindow :: mouseReleaseEvent event XY : " << e->x() << ", " << e->y() << " \n";
+// }
+
+// void MemoryParamWindow::mouseDoubleClickEvent(QMouseEvent *e){
+//     std::cout << "MemoryParamWindow :: mouseDoubleClickEvent event XY : " << e->x() << ", " << e->y() << " \n";
+// }
+
+// void MemoryParamWindow::mousePressEvent(QMouseEvent *e){
+//     std::cout << "MemoryParamWindow :: mousePressEvent event XY : " << e->x() << ", " << e->y() << " \n";
+// }
+
+// void MemoryParamWindow::keyPressEvent(QKeyEvent *event){
+//     std::cout << "MemoryParamWindow :: KEY EVENT : \n";
+
+// }
+
 
 

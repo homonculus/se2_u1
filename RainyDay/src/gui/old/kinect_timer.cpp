@@ -2,16 +2,12 @@
 #include <QDebug>
 #include <QApplication>
 
-KinectTimer::KinectTimer(KinectTimerWindow* window){
+KinectTimer::KinectTimer(KinectEventWindow* window){
 	_window = window;
 	timer = new QTimer(this);
-
 	connect(timer,SIGNAL(timeout()), this, SLOT(timerFired()));
-
 	values = 0;
 	timer->start(1000);
-
-
 }
 
 void KinectTimer::timerFired(){

@@ -1,32 +1,27 @@
 #include "kinect_worker.h"
 
 #include <iostream>
+#include "kinect_event.h"
 
-KinectWorker::KinectWorker() { // Constructor
+KinectWorker::KinectWorker(KinectEventWindow* window) {
 	std::cout << "kinect worker CONSTRUCTORS\n";
-
-    // you could copy data from constructor arguments to internal variables here.
+	_windows.push_back(window);
 }
 
-KinectWorker::~KinectWorker() { // Destructor
+KinectWorker::~KinectWorker() {
 	std::cout << "kinect worker destructor\n";
-    // free resources
 }
 
-void KinectWorker::process() { // Process. Start processing data.
-    // allocate resources using new here
-
+void KinectWorker::process() {
 	_kinectController = new KinectController();
+	_kinectController->delegate = this;
 	_kinectController->startDevice();
-	
- //    int i = 0;
-	// while(i<1000000000){
-	// 	if (i%1000000 == 0){
-	// 		std::cout << "KinectWorker " << i << "\n";
+    // emit finished();
+}
 
-	// 	}
-	// 	i+= 1;
-	// }
-    // qDebug("Hello World!");
-        // emit finished();
+
+void KinectWorker::kinectControllerReceivedImage(cv::Mat depth_image, cv::Mat registered_image){
+	for (int i = 0;i<_windows.size();i++){
+		_windows[i]->postMyCustomEvent(depth_image,registered_image);
+	}
 }

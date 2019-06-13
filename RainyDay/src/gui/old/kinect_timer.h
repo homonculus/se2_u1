@@ -3,19 +3,19 @@
 
 #include <QTimer>
 #include <QEvent>
-#include <kinect_timer_window.h>
+#include <memory_game_window.h>
 
 class KinectTimer : public QObject{
 	Q_OBJECT
 	public:
-		KinectTimer(KinectTimerWindow* window);
+		KinectTimer(KinectEventWindow* window);
 		QTimer *timer;
 
 	public slots:
 		void timerFired();
 
 	private:
-		KinectTimerWindow *_window;
+		KinectEventWindow *_window;
 		int values;
 		void postEvent();
 };

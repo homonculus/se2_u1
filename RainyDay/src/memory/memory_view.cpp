@@ -1,5 +1,5 @@
 #include "memory_view.h"
-// #include "kinect_timer_window.h"
+// #include "memory_game_window.h"
 #include "grid.h"
 #include <iostream>
 

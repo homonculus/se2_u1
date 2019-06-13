@@ -5,10 +5,10 @@
 #include <iostream>
 
 #include "kinect_worker.h"
-#include "kinect_timer.h"
 #include <string>
 
 #include <QWidget>
+#include <vector>
 
 
 int main(int argc, char *argv[]){
@@ -22,17 +22,16 @@ int main(int argc, char *argv[]){
 	m->setContentPath("/Users/ahartens/Dropbox/Beuth/Semester_6/SE2/RainyDayProject/RainyDay/src/memory/content.csv");
 	m->setupGame();
    	m->showWindow();
-   	// m->startGame();
+   	m->startGame();
 
    	QThread* thread = new QThread;
-   	KinectWorker *worker = new KinectWorker();
+   	KinectWorker *worker = new KinectWorker(m->getParamWindow());
    	worker->moveToThread(thread);
 	QObject::connect(thread, SIGNAL (started()), worker, SLOT (process()));
 	QObject::connect(worker, SIGNAL (finished()), thread, SLOT (quit()));
 	QObject::connect(worker, SIGNAL (finished()), worker, SLOT (deleteLater()));
 	QObject::connect(thread, SIGNAL (finished()), thread, SLOT (deleteLater()));
    	thread->start();
-   	KinectTimer timer(m->getWindow());
 
     a.exec();
 	return 0;

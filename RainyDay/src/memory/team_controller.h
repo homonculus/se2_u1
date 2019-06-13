@@ -3,7 +3,7 @@
 
 #include "grid_controller.h"
 #include "game.h"
-#include "kinect_timer_window.h"
+#include "memory_game_window.h"
 #include <vector>
 
 
@@ -26,7 +26,7 @@ class TeamController{
 		TeamController(GridInfo* dimensions);
 		TeamControllerDelegate* delegate;
 		void start();
-		void KinectTimerWindowControllerDidChange(int e);
+		void MemoryGameWindowDidChange(int e);
 		
 	private:
 		GridInfo* _dimensions;

@@ -14,12 +14,21 @@ struct KinectImage{
 	int height;
 };
 
+
+class KinectControllerDelegate{
+	public:
+		virtual void kinectControllerReceivedImage(cv::Mat depth_image, cv::Mat registered_image) = 0;
+		// virtual void kinectControllerReceivedImage(cv::Mat* image) = 0;
+};
+
+
 class KinectController{
 public:
 	int startDevice();
 	KinectImage* getDepthImage();
 	void closeDevice();
 	bool shutdown;
+	KinectControllerDelegate *delegate;
 
 private:
 	bool protonect_paused;

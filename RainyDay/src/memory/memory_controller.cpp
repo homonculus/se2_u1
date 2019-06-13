@@ -15,8 +15,6 @@ void MemoryController::setupGame(){
 	_setupInput();
 	_setupParamWindow();
 	_setupGameWindow();
-	// _kinectController = new KinectController();
-	// _kinectController->startDevice();
 	std::cout << "MemoryController::finished starting device\n";
 }
 
@@ -45,8 +43,8 @@ void MemoryController::_setupParamWindow(){
 
 void MemoryController::_setupGameWindow(){
 	// must be before setupInput
-	_gameWindow = new KinectTimerWindow();
-	_gameWindow->delegate = (KinectTimerWindowDelegate*)this; // timer events go directly to team controller
+	_gameWindow = new MemoryGameWindow();
+	_gameWindow->delegate = (MemoryGameWindowDelegate*)this; // timer events go directly to team controller
 	_gameWindow->setRenderArea(_view->getGrid());
 	_gameWindow->setTitle("Memory");
 }
@@ -98,17 +96,12 @@ void MemoryController::showWindow(){
 }
 
 
-void MemoryController::KinectTimerWindowControllerDidChange(int e){
-	std::cout << "MemoryController::KinectTimerWindowControllerDidChange : " << e << "\n";
+void MemoryController::MemoryGameWindowDidChange(int e){
+	std::cout << "MemoryController::MemoryGameWindowDidChange : " << e << "\n";
 }
 
-void MemoryController::KinectTimerWindowTimerFired(){
-
-
-	// std::cout << "MemoryController::KinectTimerWindowTimerFired : \n";
-	// KinectImage* image = _kinectController->getDepthImage();
-	// std::cout << "MemoryController::KinectTimerWindowTimerFired : \n";
-
+void MemoryController::MemoryGameWindowTimerFired(){
+	std::cout << "MemoryController::MemoryGameWindowTimerFired : \n";
 	// _paramWindow->setCallibrationImage(image->data, image->width, image->height);
 }
 
