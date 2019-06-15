@@ -6,11 +6,13 @@
 #include <QWidget>
 #include <QtGui>
 #include "memory_callibration_label.h"
+#include "memory_callibration_renderarea.h"
 
 QT_BEGIN_NAMESPACE
 class QLabel;
 class QComboBox;
 class QGroupBox;
+class QPushButton;
 
 QT_END_NAMESPACE
 
@@ -28,6 +30,11 @@ public:
 private:
 };
 
+struct RGB {
+    uchar blue;
+    uchar green;
+    uchar red;  };
+
 
 class MemoryParamWindow : public KinectEventWindow{
     Q_OBJECT
@@ -39,13 +46,7 @@ class MemoryParamWindow : public KinectEventWindow{
     private slots:
         void rowChanged();
         void colChanged();
-
-    // protected :
-    //     void mouseMoveEvent(QMouseEvent *e);
-    //     void mouseReleaseEvent(QMouseEvent *e);
-    //     void mouseDoubleClickEvent(QMouseEvent *e);
-    //     void mousePressEvent(QMouseEvent *e);
-    //     void keyPressEvent(QKeyEvent *event);
+        void handleStartButton();
 
     private:
         MemoryCallibrationArea *callibrationArea;
@@ -55,9 +56,16 @@ class MemoryParamWindow : public KinectEventWindow{
         QComboBox *_colComboBox;
         QGroupBox *_dimensionsBox;
         QGroupBox *_callibrationBox;
+        QGroupBox *_buttonBox;
+        QPushButton *_buttonStart;
+        QPushButton *_buttonStop;
         MemoryCallibrationLabel *_callibrationLabel;
+        MemoryCallibrationRenderArea *_callibrationRenderArea;
         void _createDimensionsBox();
         void _createCallibrationBox();
+        void _createControlBox();
+        void _drawCallibrationPointsIn(cv::Mat);
+        void _drawPointInMat(int p_x, int p_y, cv::Mat mat);
 
         // QCheckBox *transformationsCheckBox;
 };
