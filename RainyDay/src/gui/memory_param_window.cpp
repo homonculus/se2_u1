@@ -3,7 +3,7 @@
 #include <QtWidgets>
 #include <algorithm>
 #include <vector>
-
+#include <math.h>  
 const int IdRole = Qt::UserRole;
 
 MemoryParamWindow::MemoryParamWindow()
@@ -16,13 +16,6 @@ MemoryParamWindow::MemoryParamWindow()
     connect(_rowComboBox, SIGNAL(activated(int)), this, SLOT(rowChanged()));
     connect(_colComboBox, SIGNAL(activated(int)), this, SLOT(colChanged()));
     connect(_buttonStart, SIGNAL (released()),this, SLOT (handleStartButton()));
-    // QGridLayout *mainLayout = new QGridLayout;
-    // mainLayout->setColumnStretch(3, 1);
-    // mainLayout->addWidget(_rowLabel,0,0,Qt::AlignRight);// row column
-    // mainLayout->addWidget(_rowComboBox,0,1);
-
-    // mainLayout->addWidget(_colLabel,1,0,Qt::AlignRight);
-    // mainLayout->addWidget(_colComboBox,1,1);
 
     QGridLayout *mainLayout = new QGridLayout;
     mainLayout->setColumnStretch(3, 1);
@@ -30,8 +23,6 @@ MemoryParamWindow::MemoryParamWindow()
     mainLayout->addWidget(_callibrationBox,1,0);
     mainLayout->addWidget(_buttonBox,2,0);
     this->setMouseTracking(true);
-    // mainLayout->addWidget(_colLabel,1,0,Qt::AlignRight);
-    // mainLayout->addWidget(_colComboBox,1,1);
 
     setLayout(mainLayout);
 }
@@ -72,15 +63,32 @@ void MemoryParamWindow::_createDimensionsBox(){
 void MemoryParamWindow::_createCallibrationBox(){
     _callibrationBox = new QGroupBox(tr("Kalibrierung"));
     
+    _callibrationLabel1 = new MemoryCallibrationLabel();
+    _callibrationLabel1->idx = 1;
+    _callibrationLabel1->createPoints();
+    _callibrationLabel1->delegate = this;
 
-    _callibrationLabel = new MemoryCallibrationLabel();
-    _callibrationLabel->createPoints();
 
-    _callibrationRenderArea = new MemoryCallibrationRenderArea();
+    _callibrationLabel2 = new MemoryCallibrationLabel();
+    _callibrationLabel2->idx = 2;
+    _callibrationLabel2->createPoints();
+    _callibrationLabel2->delegate = this;
+
+
+    _callibrationRenderArea1 = new MemoryCallibrationRenderArea();
+    updateMemoryCallibrationLabelRects(1);
+
+    _callibrationRenderArea2 = new MemoryCallibrationRenderArea();
+    updateMemoryCallibrationLabelRects(2);
+
+
 
     QGridLayout *layout = new QGridLayout;
-    layout->addWidget(_callibrationLabel,0,0);// row column
-    layout->addWidget(_callibrationRenderArea,0,0);// row column
+    layout->addWidget(_callibrationLabel1,0,0);// row column
+    layout->addWidget(_callibrationRenderArea1,0,0);// row column
+    layout->addWidget(_callibrationLabel2,0,1);// row column
+    layout->addWidget(_callibrationRenderArea2,0,1);// row column
+
 
     // layout->setColumnStretch(1, 10);
 
@@ -101,34 +109,129 @@ void MemoryParamWindow::_createControlBox(){
 
 
 void MemoryParamWindow::setCallibrationImage(cv::Mat mat){
-    _drawCallibrationPointsIn(mat);
-    std::cout << mat.size() << "IMAGE SIZE \n";
     QPixmap pix = QPixmap::fromImage(QImage((unsigned char*) mat.data, mat.cols, mat.rows, QImage::Format_RGB32));
     // QPixmap pix= QPixmap::fromImage(QImage(data, width, height, QImage::Format_RGB888).rgbSwapped());
-    _callibrationLabel->setPixmap(pix);
+    _callibrationLabel1->setPixmap(pix);
+
+
+    cv::Mat h1 = findHomography(_convertQPointsToCVPoints(_callibrationLabel1->getHandlePoints()), _convertQPointsToCVPoints(_callibrationLabel2->getHandlePoints()));
+    cv::Mat imout;
+    cv::warpPerspective(mat, imout, h1, mat.size());
+
+    QPixmap pix2 = QPixmap::fromImage(QImage((unsigned char*) imout.data, imout.cols, imout.rows, QImage::Format_RGB32));
+    _callibrationLabel2->setPixmap(pix2);
+
+    // Points in warped back to original space
+    // cv::Mat h = findHomography(_convertQPointsToCVPoints(_callibrationLabel1->getHandlePoints()), _convertQPointsToCVPoints(_callibrationLabel2->getHandlePoints()));
+
+    // cv::Mat imout_tooriginal;
+    // cv::warpPerspective(imout, imout_tooriginal, h, mat.size());
+
+    // cv::Mat matv = (cv::Mat_<double>(1,3) << 100,100,1);
+
+    // cv::Mat math;
+    // h1.convertTo(math,matv.type());
+
+    // std::vector<QPoint*> ps = _callibrationLabel1->getHandlePoints();
+    // cv::Mat m = math * matv.t();
+    // std::cout << m << "\n";
+
 }
 
+std::vector<cv::Point2f> MemoryParamWindow::_convertQPointsToCVPoints(std::vector<QPoint*> p){
+    std::vector<cv::Point2f> cvps;
+    for (int i=0;i<p.size();i++){
+        cvps.push_back(cv::Point2f(p[i]->x(), p[i]->y()));
+    }
+    return cvps;
+}
 void MemoryParamWindow::rowChanged(){
     std::cout << "ROW CHANGED : " << _rowComboBox->itemData(_rowComboBox->currentIndex(), IdRole).toInt() << "\n";
+    _drawGridInCallibrationLabel();
 }
 
 void MemoryParamWindow::colChanged(){
     std::cout << "ROW CHANGED : " << _rowComboBox->itemData(_rowComboBox->currentIndex(), IdRole).toInt() << "\n";
+    _drawGridInCallibrationLabel();
+}
+
+void MemoryParamWindow::_drawGridInCallibrationLabel(){
+
+    std::vector<std::vector<QPoint*> > gridpoints;
+    std::cout << "MemoryParamWindow::_drawGridInCallibrationLabel \n";
+
+    int nrows = _rowComboBox->itemData(_rowComboBox->currentIndex(), IdRole).toInt() +2;
+    int ncols = _colComboBox->itemData(_colComboBox->currentIndex(), IdRole).toInt() +2;
+
+    std::cout << "MemoryParamWindow::_drawGridInCallibrationLabel nrwos : " << nrows << "\n";
+    std::cout << "MemoryParamWindow::_drawGridInCallibrationLabel nrwos : " << ncols << "\n";
+    int margin = 100;
+    int total_w = 512;
+    int total_h = 424;
+    int cell_h = round((total_h - 2*margin)/nrows);
+    int cell_w = round((total_w - 2*margin)/ncols);
+    // make left right grid
+
+
+    std::cout << "MemoryParamWindow::_drawGridInCallibrationLabel 1\n";
+
+    for (int r=0;r<nrows;r++){
+    std::cout << "MemoryParamWindow::_drawGridInCallibrationLabel 2\n";
+        std::vector<QPoint *> gpoints_left;
+        std::vector<QPoint *> gpoints_right;
+        int top = r*cell_h + margin;
+        int bottom = top + cell_h;
+        gpoints_left.push_back(new QPoint(0,top));
+        gpoints_left.push_back(new QPoint(margin,top));
+        gpoints_left.push_back(new QPoint(0,bottom));
+        gpoints_left.push_back(new QPoint(margin,bottom));
+
+        gpoints_right.push_back(new QPoint(total_w-margin,top));
+        gpoints_right.push_back(new QPoint(total_w,top));
+        gpoints_right.push_back(new QPoint(total_w-margin,bottom));
+        gpoints_right.push_back(new QPoint(total_w,bottom));
+
+        gridpoints.push_back(gpoints_left);
+        gridpoints.push_back(gpoints_right);
+    }
+    std::cout << "MemoryParamWindow::_drawGridInCallibrationLabel 3\n";
+
+    for (int c=0;c<ncols;c++){
+
+        std::vector<QPoint *> gpoints_top;
+        std::vector<QPoint *> gpoints_bottom;
+        int left = c*cell_w + margin;
+        int right = left + cell_w;
+        std::cout << "MemoryParamWindow::_drawGridInCallibrationLabel 4 with c : " << left << "\n";
+
+        gpoints_top.push_back(new QPoint(left,0));//top left
+        gpoints_top.push_back(new QPoint(right,0));// top right
+        gpoints_top.push_back(new QPoint(left,margin));//bottom left
+        gpoints_top.push_back(new QPoint(right,margin));//bottom right
+
+        gpoints_bottom.push_back(new QPoint(left,total_h-margin));//top left
+        gpoints_bottom.push_back(new QPoint(right,total_h-margin));// top right
+        gpoints_bottom.push_back(new QPoint(left,total_h));//bottom left
+        gpoints_bottom.push_back(new QPoint(right,total_h));//bottom right
+        gridpoints.push_back(gpoints_top);
+        gridpoints.push_back(gpoints_bottom);
+    }
+    std::cout << "MemoryParamWindow::_drawGridInCallibrationLabel 5\n";
+
+ 
+    _callibrationRenderArea2->setGridPoints(gridpoints);
 }
 
 void MemoryParamWindow::handleMyCustomEvent(const KinectEvent *event){
     setCallibrationImage(event->getCustomData2());
 }
 
-void MemoryParamWindow::_drawCallibrationPointsIn(cv::Mat mat){
-    std::vector<CallibrationPoint*> points = *_callibrationLabel->getPoints();
-    std::cout << points.size() << "MemoryParamWindow::_drawCallibrationPointsI : points size\n";
-
-    for (int i=0;i<points.size();i++){
-        CallibrationPoint* p = points[i];
-        _drawPointInMat(p->center.x, p->center.y, mat);
+void MemoryParamWindow::updateMemoryCallibrationLabelRects(int idx){
+    if (idx == 1){
+        _callibrationRenderArea1->updatePoints(_callibrationLabel1->getHandlePoints());
+    } else if (idx == 2){
+        _callibrationRenderArea2->updatePoints(_callibrationLabel2->getHandlePoints());
     }
-
 }
 
 void MemoryParamWindow::_drawPointInMat(int p_x, int p_y, cv::Mat mat){

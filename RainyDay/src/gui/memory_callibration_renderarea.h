@@ -15,6 +15,9 @@ public:
     MemoryCallibrationRenderArea();
     QSize minimumSizeHint() const override;
     QSize sizeHint() const override;
+    void updatePoints(std::vector<QPoint*> points);
+    void setGridPoints(std::vector<std::vector<QPoint*> > points);
+
 
 protected:
     void paintEvent(QPaintEvent *event) override;
@@ -26,8 +29,10 @@ private:
     bool transformed;
     void _setPen(const QPen &pen);
     void _setBrush(const QBrush &brush);
-    const QPoint * _points;
-    void updatePoints(const QPoint *points);
+    void _drawGrid(QPainter *painter);
+    std::vector<QPoint*> _points;
+    int _drawGridFlag;
+    std::vector<std::vector<QPoint*> > _gridpoints;
 };
 
 #endif // MEMORYCALLIBRATIONRENDERAREA_H

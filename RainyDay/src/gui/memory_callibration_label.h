@@ -7,25 +7,12 @@
 #include <QtGui>
 #include <cmath>        // std::abs
 #include <vector>
-struct Point{
-    int x;
-    int y;
-};
 
-class CallibrationPoint{
+
+class MemoryCallibrationLabelDelegate{
     public:
-        Point center;
-        int idx;
-        bool pointIsWithinRadius(Point p, int r){
-            std::cout << "pointIsWithinRadius : center xy : " << center.x << ", " << center.y << " idx:" << idx << "\n";
-            if ((std::abs(p.x - center.x)<r) && (std::abs(p.y-center.y)<r)){
-                return true;
-            }
-            return false;
-        }
-    private:
+        virtual void updateMemoryCallibrationLabelRects(int idx) = 0;
 };
-
 
 class MemoryCallibrationLabel : public QLabel
 {
@@ -34,7 +21,9 @@ class MemoryCallibrationLabel : public QLabel
     public:
         ~MemoryCallibrationLabel();
         void createPoints();
-        std::vector<CallibrationPoint*>* getPoints();
+        std::vector<QPoint*> getHandlePoints();
+        MemoryCallibrationLabelDelegate *delegate;
+        int idx;
 
     protected slots:
         virtual void enterEvent ( QEvent *e );
@@ -45,13 +34,10 @@ class MemoryCallibrationLabel : public QLabel
 
 
     private:
-        CallibrationPoint *_draggingPoint;
         bool _dragging;
-        std::vector<CallibrationPoint*> _points;
-        std::vector<CallibrationPoint*> _outerPoints;
-        std::vector<QLabel*> _handles;
-        std::vector<QLabel*> _outerHandles;
-        QLabel *_draggingHandle;
+        std::vector<QPoint*> _points;
+        std::vector<QPoint*> _points_outer;
+        bool _pointIsWithinRadius(QPoint p1, QPoint p2, int r);
         int _draggingIdx;
 };
 

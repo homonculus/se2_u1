@@ -1,26 +1,24 @@
 #include "memory_callibration_renderarea.h"
 
 #include <QPainter>
+#include <iostream>
 
 MemoryCallibrationRenderArea::MemoryCallibrationRenderArea(){
     this->antialiased = true;;
-    // setBackgroundRole(QPalette::Base);
-    // setAutoFillBackground(true);
-
- // setAttribute(Qt::WA_NoSystemBackground);
- //    setAttribute(Qt::WA_TranslucentBackground);
- //    setAttribute(Qt::WA_PaintOnScreen);
-
     setAttribute(Qt::WA_TransparentForMouseEvents);
 
+    for (int i =0;i<4;i++){
+        QPoint p = QPoint(0,0);
+        _points.push_back(&p);
+    }
+    _drawGridFlag = false;
 
-    static const QPoint points[4] = {
-        QPoint(10, 80),
-        QPoint(20, 10),
-        QPoint(80, 30),
-        QPoint(90, 70)
-    };
-    _points = points;
+    std::vector<QPoint *> gpoints;
+    gpoints.push_back(new QPoint(0,100));
+    gpoints.push_back(new QPoint(100,100));
+    gpoints.push_back(new QPoint(0,200));
+    gpoints.push_back(new QPoint(100,200));
+    _gridpoints.push_back(gpoints);
 }
 
 QSize MemoryCallibrationRenderArea::minimumSizeHint() const{
@@ -41,57 +39,73 @@ void MemoryCallibrationRenderArea::_setBrush(const QBrush &brush){
     update();
 }
 
-void MemoryCallibrationRenderArea::updatePoints(const QPoint *points){
-    static const QPoint points[4] = {
-        QPoint(10, 80),
-        QPoint(20, 10),
-        QPoint(80, 30),
-        QPoint(90, 70)
-    };
+void MemoryCallibrationRenderArea::updatePoints(std::vector<QPoint*> points){
     _points = points;
+    std::cout << "UPDATING UPOINTS!!!\n";
     update();
 }
 
 void MemoryCallibrationRenderArea::paintEvent(QPaintEvent * /* event */){
-    // static const QPoint points[4] = {
-    //     QPoint(10, 80),
-    //     QPoint(20, 10),
-    //     QPoint(80, 30),
-    //     QPoint(90, 70)
-    // };
-
-    // QPainterPath path;
-    // path.moveTo(20, 80);
-    // path.lineTo(20, 30);
-    // path.cubicTo(80, 0, 50, 50, 80, 80);
-
+    QPoint points[4] = {
+        *_points[0],
+        *_points[2],
+        *_points[3],
+        *_points[1],
+    };
 
     QPainter painter(this);
     painter.setPen(pen);
     painter.setBrush(brush);
     painter.setRenderHint(QPainter::Antialiasing, true);
 
-    for (int x = 0; x < width(); x += 100) {
-        for (int y = 0; y < height(); y += 100) {
-            painter.save();
-            painter.translate(x, y);
-            if (transformed) {
-                painter.translate(50, 50);
-                painter.rotate(60.0);
-                painter.scale(0.6, 0.9);
-                painter.translate(-50, -50);
-            }
 
-            painter.drawPolygon(_points, 4);
-            
-            painter.restore();
-            break;
-        }
-        break;
+    painter.save();
+    painter.translate(0, 0);
+
+
+    painter.drawPolygon(points, 4);
+
+    if (_drawGridFlag){
+        std::cout << "MemoryCallibrationRenderArea::paintEvent with draw grid\n";
+        painter.setBrush(QColor(255, 30, 30, 125));
+        painter.setPen(Qt::darkCyan);
+        _drawGrid(&painter);
+    }
+    else{
+        std::cout << "MemoryCallibrationRenderArea::paintEvent with NO DRAW grid\n";
     }
 
-    painter.setRenderHint(QPainter::Antialiasing, false);
-    painter.setPen(palette().dark().color());
-    painter.setBrush(Qt::NoBrush);
-    painter.drawRect(QRect(0, 0, width() - 1, height() - 1));
+    painter.setBrush(Qt::cyan);
+    painter.setPen(Qt::darkCyan);
+
+    for (int i=0;i<_points.size();i++){
+        painter.drawEllipse(*_points[i],10,10);
+
+    }
+    
+    painter.restore();
+}
+
+void MemoryCallibrationRenderArea::setGridPoints(std::vector<std::vector<QPoint*> > points){
+    _drawGridFlag = true;
+    _gridpoints = points;
+    std::cout << "MemoryCallibrationRenderArea::setGridPoints\n";
+}
+
+void MemoryCallibrationRenderArea::_drawGrid(QPainter *painter){
+
+    std::cout << "MemoryCallibrationRenderArea::_drawGrid  size : "<< _gridpoints.size();
+
+    for (int i=0;i<_gridpoints.size();i++){
+        std::cout << "MemoryCallibrationRenderArea::_drawGrid 1\n";
+        QPoint points[4] = {
+            *_gridpoints[i][0],
+            *_gridpoints[i][2],
+            *_gridpoints[i][3],
+            *_gridpoints[i][1],
+        };
+
+        std::cout << "MemoryCallibrationRenderArea::_drawGrid 2\n";
+        painter->drawPolygon(points,4);
+    }
 }

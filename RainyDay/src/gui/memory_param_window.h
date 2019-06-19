@@ -36,12 +36,13 @@ struct RGB {
     uchar red;  };
 
 
-class MemoryParamWindow : public KinectEventWindow{
+class MemoryParamWindow : public KinectEventWindow, public MemoryCallibrationLabelDelegate{
     Q_OBJECT
     public:
         MemoryParamWindow();
         void setCallibrationImage(cv::Mat mat);
         void handleMyCustomEvent(const KinectEvent *event);
+        void updateMemoryCallibrationLabelRects(int idx);
 
     private slots:
         void rowChanged();
@@ -59,13 +60,17 @@ class MemoryParamWindow : public KinectEventWindow{
         QGroupBox *_buttonBox;
         QPushButton *_buttonStart;
         QPushButton *_buttonStop;
-        MemoryCallibrationLabel *_callibrationLabel;
-        MemoryCallibrationRenderArea *_callibrationRenderArea;
+        MemoryCallibrationLabel *_callibrationLabel1;
+        MemoryCallibrationLabel *_callibrationLabel2;
+        MemoryCallibrationRenderArea *_callibrationRenderArea1;
+        MemoryCallibrationRenderArea *_callibrationRenderArea2;
         void _createDimensionsBox();
         void _createCallibrationBox();
         void _createControlBox();
         void _drawCallibrationPointsIn(cv::Mat);
         void _drawPointInMat(int p_x, int p_y, cv::Mat mat);
+        void _drawGridInCallibrationLabel();
+    std::vector<cv::Point2f> _convertQPointsToCVPoints(std::vector<QPoint*> p);
 
         // QCheckBox *transformationsCheckBox;
 };
