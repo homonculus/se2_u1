@@ -75,7 +75,7 @@ class MemoryParamWindow : public KinectEventWindow, public MemoryCallibrationLab
         void _createCallibrationBox();
         void _createControlBox();
         void _drawCallibrationPointsIn(cv::Mat);
-        void _thresholdImage(cv::Mat *mat);
+        cv::Mat _thresholdImage(cv::Mat *mat);
         void _drawGridInCallibrationLabel();
         bool _depthOnly;
         std::vector<cv::Point2f> _convertQPointsToCVPoints(std::vector<QPoint*> p);

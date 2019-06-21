@@ -139,8 +139,8 @@ void MemoryParamWindow::setCallibrationImage(cv::Mat registered, cv::Mat depth){
         cv::Mat warped_dep;
         cv::warpPerspective(depth, warped_dep, h, depth.size());
 
-        _thresholdImage(&warped_dep);
-        QPixmap pix2 = QPixmap::fromImage(QImage((unsigned char*) warped_dep.data, warped_dep.cols, warped_dep.rows, QImage::Format_RGB32));
+        cv::Mat img = _thresholdImage(&warped_dep);
+        QPixmap pix2 = QPixmap::fromImage(QImage((unsigned char*) img.data, img.cols, img.rows, QImage::Format_RGB32));
         _callibrationLabel2->setPixmap(pix2);
     }
     else{
@@ -189,8 +189,10 @@ void MemoryParamWindow::_drawGridInCallibrationLabel(){
 
     std::cout << "MemoryParamWindow::_drawGridInCallibrationLabel 1\n";
 
+    
+
     for (int r=0;r<nrows;r++){
-    std::cout << "MemoryParamWindow::_drawGridInCallibrationLabel 2\n";
+        std::cout << "MemoryParamWindow::_drawGridInCallibrationLabel 2\n";
         std::vector<QPoint *> gpoints_left;
         std::vector<QPoint *> gpoints_right;
         int top = r*cell_h + margin;
@@ -247,28 +249,91 @@ void MemoryParamWindow::updateMemoryCallibrationLabelRects(int idx){
     }
 }
 
-void MemoryParamWindow::_thresholdImage(cv::Mat *mat){
+cv::Mat MemoryParamWindow::_thresholdImage(cv::Mat *mat){
     cv::Size s = mat->size();
     // int r = 10;
-    int t1 = 100;
-    int t2 = 200;
+    float t1 = 4500/3;
+    float t2 = (4500*2)/3;
     // int e_x = std::min(p_x + r, s.width);
     // int s_y = std::max(p_y - r, 0);
     // int e_y = std::min(p_y + r, s.height);
     // std::cout << *mat << "\n";
     cv::Vec3b color;
-    std::cout << "MemoryParamWindow :: _thresholdImage " << mat->type() << "\n";
-    // for (int x=0;x<s.width;x++){
-    //     for (int y=0;y<s.height;y++){
-    //         // mat
-    //         // color = mat->at<cv::Vec3b>(cv::Point(x,y));
-    //         // print(color);
-    //         // color[0] = 255;
-    //         // color[1] = 255;
-    //         // color[2] = 255;
-    //         // mat.at<cv::Vec3b>(cv::Point(x,y)) = color;
-    //     }
-    // }
+    // std::cout << "MemoryParamWindow :: _thresholdImage " << mat->type() << "\n";
+    float val;
+    // std::cout << *mat << "\n";
+    std::vector<std::vector<QPoint*> > points = _callibrationRenderArea2->getGridPoints();
+
+
+    cv::Mat img = cv::Mat(s.height, s.width, CV_8UC4);
+
+    std::vector<bool> active;
+    for (int x=0;x<s.width;x++){
+        for (int y=0;y<s.height;y++){
+            val = mat->at<float>(cv::Point(x,y));
+
+            // // find if x,y is within a grid controller
+            // int _m = 100;
+            // bool sides = (y > _m) && (y < (s.height - _m));
+            // bool tb = (x > _m) && (x < (s.width - _m));
+            // bool left = (x < _m) && sides;
+            // bool right = (x > (s.width-_m)) && sides;
+            // bool top = (y < _m) && tb;
+            // bool bottom = (y > (s.height-_m)) && tb;
+
+            // int top_left = 0;
+            // int top_right = 1;
+            // int bottom_left = 2;
+            // int bottom_right = 3;
+
+            // if (left){
+            //     for (int i = 0;i<points.size();i++){
+            //         // now how are indexes saved?
+            //         if ((y > points[i][top_left]->y()) && (y<points[i][bottom_left]->y())){
+
+            //         }
+            //     }
+
+            // }
+            // else if (right){
+
+            // }
+            // else if (top){
+
+            // }
+            // else if (bottom){
+
+            // }
+    
+
+        
+            if (val < t1){
+                color[0] = 0;
+                color[1] = 0;
+                color[2] = 0;
+            }
+            else if (val >= t1 && val < t2){
+                color[0] = 100;
+                color[1] = 100;
+                color[2] = 0;
+            }
+            else{
+                color[0] = 100;
+                color[1] = 100;
+                color[2] = 100;
+            }
+            img.at<cv::Vec3b>(cv::Point(x,y)) = color;
+
+            // mat
+            // color = mat->at<cv::Vec3b>(cv::Point(x,y));
+            // print(color);
+            // color[0] = 255;
+            // color[1] = 255;
+            // color[2] = 255;
+            // mat.at<cv::Vec3b>(cv::Point(x,y)) = color;
+        }
+    }
+    return img;
 }
 
 

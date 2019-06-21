@@ -110,7 +110,7 @@ int KinectController::startDevice(){
 		libfreenect2::Frame *depth = frames[libfreenect2::Frame::Depth];
 		_registration->apply(rgb, depth, &undistorted, &registered);
 		Mat image = Mat(registered.height, registered.width, CV_8UC4, registered.data);
-		Mat depth_image = Mat(depth->height, depth->width, CV_8UC4, depth->data);
+		Mat depth_image = Mat(depth->height, depth->width, CV_32F, depth->data);
 		
 		delegate->kinectControllerReceivedImage(depth_image, image);
 		waitKey(1000);

@@ -18,6 +18,7 @@ public:
     void updatePoints(std::vector<QPoint*> points);
     void setGridPoints(std::vector<std::vector<QPoint*> > points);
 
+    std::vector<std::vector<QPoint*> > getGridPoints(){return _gridpoints;};
 
 protected:
     void paintEvent(QPaintEvent *event) override;
