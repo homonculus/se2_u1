@@ -16,52 +16,76 @@ MemoryParamWindow::MemoryParamWindow()
     connect(_rowComboBox, SIGNAL(activated(int)), this, SLOT(rowChanged()));
     connect(_colComboBox, SIGNAL(activated(int)), this, SLOT(colChanged()));
     connect(_buttonStart, SIGNAL (released()),this, SLOT (handleStartButton()));
+    connect(_buttonToggleDepth, SIGNAL(toggled(bool)), this, SLOT(_toggleDepthOnlyOrRegistered(bool)));
+
 
     QGridLayout *mainLayout = new QGridLayout;
-    mainLayout->setColumnStretch(3, 1);
+    // mainLayout->setColumnStretch(3, 1);
     mainLayout->addWidget(_dimensionsBox,0,0);// row column
     mainLayout->addWidget(_callibrationBox,1,0);
-    mainLayout->addWidget(_buttonBox,2,0);
+    mainLayout->addWidget(_buttonBox,0,1);
     this->setMouseTracking(true);
 
     setLayout(mainLayout);
+    _depthOnly = true;
 }
 
 void MemoryParamWindow::handleStartButton(){
     std::cout << "START BUTTON PRESSED!\n";
 }
 
+void MemoryParamWindow::_toggleDepthOnlyOrRegistered(bool on){
+    _depthOnly = !on;
+    std::cout << "MemoryParamWindow::_toggleDepthOnlyOrRegistered : " << on << "\n";
+
+}
+
 void MemoryParamWindow::_createDimensionsBox(){
     _dimensionsBox = new QGroupBox(tr("Spiel Dimensionen"));
     
+    // row combo box
     _rowComboBox = new QComboBox;
     _rowComboBox->addItem(tr("2"),0);
     _rowComboBox->addItem(tr("3"),1);
     _rowComboBox->addItem(tr("4"),2);
-    _rowComboBox->addItem(tr("5"),2);
+    _rowComboBox->addItem(tr("5"),3);
     _rowLabel = new QLabel(tr("&Anzahl Reien:"));
     _rowLabel->setBuddy(_rowComboBox);
 
+    // column combo box
     _colComboBox = new QComboBox;
     _colComboBox->addItem(tr("2"),0);
     _colComboBox->addItem(tr("3"),1);
     _colComboBox->addItem(tr("4"),2);
-    _colComboBox->addItem(tr("5"),2);
+    _colComboBox->addItem(tr("5"),3);
     _colLabel = new QLabel(tr("&Anzahl Spalten:"));
     _colLabel->setBuddy(_colComboBox);
+
+    // Registered image/depth toggle
+    _buttonToggleDepth = new QRadioButton;
+    _buttonToggleDepthLabel = new QLabel(tr("&Tiefe + RGB Zeigen"));
+    _buttonToggleDepthLabel->setBuddy(_buttonToggleDepth);
+
+
+    _buttonStart = new QPushButton("&Start", this);
+
 
     QGridLayout *layout = new QGridLayout;
     layout->addWidget(_rowLabel,0,0,Qt::AlignRight);// row column
     layout->addWidget(_rowComboBox,0,1);
-    layout->addWidget(_colLabel,1,0,Qt::AlignRight);
-    layout->addWidget(_colComboBox,1,1);
-    layout->setColumnStretch(1, 10);
+    layout->addWidget(_colLabel,0,2,Qt::AlignRight);
+    layout->addWidget(_colComboBox,0,3);
+    layout->addWidget(_buttonToggleDepthLabel,1,1,Qt::AlignRight);// row column
+    layout->addWidget(_buttonToggleDepth,1,0);
+    layout->addWidget(_buttonStart,3,0);
 
     _dimensionsBox->setLayout(layout);
 }
 
 void MemoryParamWindow::_createCallibrationBox(){
     _callibrationBox = new QGroupBox(tr("Kalibrierung"));
+    _callibrationBox2 = new QGroupBox(tr("Resultat"));
+
     
     _callibrationLabel1 = new MemoryCallibrationLabel();
     _callibrationLabel1->idx = 1;
@@ -81,61 +105,50 @@ void MemoryParamWindow::_createCallibrationBox(){
     _callibrationRenderArea2 = new MemoryCallibrationRenderArea();
     updateMemoryCallibrationLabelRects(2);
 
-
-
     QGridLayout *layout = new QGridLayout;
     layout->addWidget(_callibrationLabel1,0,0);// row column
     layout->addWidget(_callibrationRenderArea1,0,0);// row column
     layout->addWidget(_callibrationLabel2,0,1);// row column
     layout->addWidget(_callibrationRenderArea2,0,1);// row column
 
-
     // layout->setColumnStretch(1, 10);
 
     _callibrationBox->setLayout(layout);
+    _drawGridInCallibrationLabel();
 }
 
 void MemoryParamWindow::_createControlBox(){
-    _buttonBox = new QGroupBox(tr("Kontrolle"));
-    _buttonStart = new QPushButton("&Start", this);
-    _buttonStop = new QPushButton("&Stop", this);
+    // _buttonBox = new QGroupBox(tr("Kontrolle"));
+    // _buttonStart = new QPushButton("&Start", this);
+    // _buttonStop = new QPushButton("&Stop", this);
 
-    QGridLayout *layout = new QGridLayout;
-    layout->addWidget(_buttonStart,0,0);// row column
-    layout->addWidget(_buttonStop,0,1);
-    // layout->setColumnStretch(1, 10);
-    _buttonBox->setLayout(layout);
+    // QGridLayout *layout = new QGridLayout;
+    // layout->addWidget(_buttonStart,0,0);// row column
+    // layout->addWidget(_buttonStop,0,1);
+    // // layout->setColumnStretch(1, 10);
+    // _buttonBox->setLayout(layout);
 }
 
 
-void MemoryParamWindow::setCallibrationImage(cv::Mat mat){
-    QPixmap pix = QPixmap::fromImage(QImage((unsigned char*) mat.data, mat.cols, mat.rows, QImage::Format_RGB32));
-    // QPixmap pix= QPixmap::fromImage(QImage(data, width, height, QImage::Format_RGB888).rgbSwapped());
+void MemoryParamWindow::setCallibrationImage(cv::Mat registered, cv::Mat depth){
+    QPixmap pix = QPixmap::fromImage(QImage((unsigned char*) registered.data, registered.cols, registered.rows, QImage::Format_RGB32));
     _callibrationLabel1->setPixmap(pix);
+    cv::Mat h = findHomography(_convertQPointsToCVPoints(_callibrationLabel1->getHandlePoints()), _convertQPointsToCVPoints(_callibrationLabel2->getHandlePoints()));
+    int x = 2;
+    if (_depthOnly){
+        cv::Mat warped_dep;
+        cv::warpPerspective(depth, warped_dep, h, depth.size());
 
-
-    cv::Mat h1 = findHomography(_convertQPointsToCVPoints(_callibrationLabel1->getHandlePoints()), _convertQPointsToCVPoints(_callibrationLabel2->getHandlePoints()));
-    cv::Mat imout;
-    cv::warpPerspective(mat, imout, h1, mat.size());
-
-    QPixmap pix2 = QPixmap::fromImage(QImage((unsigned char*) imout.data, imout.cols, imout.rows, QImage::Format_RGB32));
-    _callibrationLabel2->setPixmap(pix2);
-
-    // Points in warped back to original space
-    // cv::Mat h = findHomography(_convertQPointsToCVPoints(_callibrationLabel1->getHandlePoints()), _convertQPointsToCVPoints(_callibrationLabel2->getHandlePoints()));
-
-    // cv::Mat imout_tooriginal;
-    // cv::warpPerspective(imout, imout_tooriginal, h, mat.size());
-
-    // cv::Mat matv = (cv::Mat_<double>(1,3) << 100,100,1);
-
-    // cv::Mat math;
-    // h1.convertTo(math,matv.type());
-
-    // std::vector<QPoint*> ps = _callibrationLabel1->getHandlePoints();
-    // cv::Mat m = math * matv.t();
-    // std::cout << m << "\n";
-
+        _thresholdImage(&warped_dep);
+        QPixmap pix2 = QPixmap::fromImage(QImage((unsigned char*) warped_dep.data, warped_dep.cols, warped_dep.rows, QImage::Format_RGB32));
+        _callibrationLabel2->setPixmap(pix2);
+    }
+    else{
+        cv::Mat warped_reg;
+        cv::warpPerspective(registered, warped_reg, h, registered.size());
+        QPixmap pix2 = QPixmap::fromImage(QImage((unsigned char*) warped_reg.data, warped_reg.cols, warped_reg.rows, QImage::Format_RGB32));
+        _callibrationLabel2->setPixmap(pix2);
+    }
 }
 
 std::vector<cv::Point2f> MemoryParamWindow::_convertQPointsToCVPoints(std::vector<QPoint*> p){
@@ -165,6 +178,7 @@ void MemoryParamWindow::_drawGridInCallibrationLabel(){
 
     std::cout << "MemoryParamWindow::_drawGridInCallibrationLabel nrwos : " << nrows << "\n";
     std::cout << "MemoryParamWindow::_drawGridInCallibrationLabel nrwos : " << ncols << "\n";
+
     int margin = 100;
     int total_w = 512;
     int total_h = 424;
@@ -217,13 +231,12 @@ void MemoryParamWindow::_drawGridInCallibrationLabel(){
         gridpoints.push_back(gpoints_bottom);
     }
     std::cout << "MemoryParamWindow::_drawGridInCallibrationLabel 5\n";
-
- 
     _callibrationRenderArea2->setGridPoints(gridpoints);
+    std::cout << "MemoryParamWindow::_drawGridInCallibrationLabel 6\n";
 }
 
 void MemoryParamWindow::handleMyCustomEvent(const KinectEvent *event){
-    setCallibrationImage(event->getCustomData2());
+    setCallibrationImage(event->getCustomData2(), event->getCustomData1());
 }
 
 void MemoryParamWindow::updateMemoryCallibrationLabelRects(int idx){
@@ -234,24 +247,28 @@ void MemoryParamWindow::updateMemoryCallibrationLabelRects(int idx){
     }
 }
 
-void MemoryParamWindow::_drawPointInMat(int p_x, int p_y, cv::Mat mat){
-    cv::Size s = mat.size();
-    int r = 10;
-    int s_x = std::max(p_x - r, 0);
-    int e_x = std::min(p_x + r, s.width);
-    int s_y = std::max(p_y - r, 0);
-    int e_y = std::min(p_y + r, s.height);
-
+void MemoryParamWindow::_thresholdImage(cv::Mat *mat){
+    cv::Size s = mat->size();
+    // int r = 10;
+    int t1 = 100;
+    int t2 = 200;
+    // int e_x = std::min(p_x + r, s.width);
+    // int s_y = std::max(p_y - r, 0);
+    // int e_y = std::min(p_y + r, s.height);
+    // std::cout << *mat << "\n";
     cv::Vec3b color;
-    for (int x=s_x;x<e_x;x++){
-        for (int y=s_y;y<e_y;y++){
-            color = mat.at<cv::Vec3b>(cv::Point(x,y));
-            color[0] = 255;
-            color[1] = 255;
-            color[2] = 255;
-            mat.at<cv::Vec3b>(cv::Point(x,y)) = color;
-        }
-    }
+    std::cout << "MemoryParamWindow :: _thresholdImage " << mat->type() << "\n";
+    // for (int x=0;x<s.width;x++){
+    //     for (int y=0;y<s.height;y++){
+    //         // mat
+    //         // color = mat->at<cv::Vec3b>(cv::Point(x,y));
+    //         // print(color);
+    //         // color[0] = 255;
+    //         // color[1] = 255;
+    //         // color[2] = 255;
+    //         // mat.at<cv::Vec3b>(cv::Point(x,y)) = color;
+    //     }
+    // }
 }
 
 

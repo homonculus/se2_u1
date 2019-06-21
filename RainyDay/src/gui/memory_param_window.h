@@ -13,6 +13,7 @@ class QLabel;
 class QComboBox;
 class QGroupBox;
 class QPushButton;
+class QRadioButton;
 
 QT_END_NAMESPACE
 
@@ -40,7 +41,7 @@ class MemoryParamWindow : public KinectEventWindow, public MemoryCallibrationLab
     Q_OBJECT
     public:
         MemoryParamWindow();
-        void setCallibrationImage(cv::Mat mat);
+        void setCallibrationImage(cv::Mat registered, cv::Mat depth);
         void handleMyCustomEvent(const KinectEvent *event);
         void updateMemoryCallibrationLabelRects(int idx);
 
@@ -48,6 +49,7 @@ class MemoryParamWindow : public KinectEventWindow, public MemoryCallibrationLab
         void rowChanged();
         void colChanged();
         void handleStartButton();
+        void _toggleDepthOnlyOrRegistered(bool on);
 
     private:
         MemoryCallibrationArea *callibrationArea;
@@ -57,9 +59,14 @@ class MemoryParamWindow : public KinectEventWindow, public MemoryCallibrationLab
         QComboBox *_colComboBox;
         QGroupBox *_dimensionsBox;
         QGroupBox *_callibrationBox;
+        QGroupBox *_callibrationBox2;
         QGroupBox *_buttonBox;
         QPushButton *_buttonStart;
         QPushButton *_buttonStop;
+        QRadioButton *_buttonToggleDepth;
+        QLabel *_buttonToggleDepthLabel;
+
+
         MemoryCallibrationLabel *_callibrationLabel1;
         MemoryCallibrationLabel *_callibrationLabel2;
         MemoryCallibrationRenderArea *_callibrationRenderArea1;
@@ -68,9 +75,10 @@ class MemoryParamWindow : public KinectEventWindow, public MemoryCallibrationLab
         void _createCallibrationBox();
         void _createControlBox();
         void _drawCallibrationPointsIn(cv::Mat);
-        void _drawPointInMat(int p_x, int p_y, cv::Mat mat);
+        void _thresholdImage(cv::Mat *mat);
         void _drawGridInCallibrationLabel();
-    std::vector<cv::Point2f> _convertQPointsToCVPoints(std::vector<QPoint*> p);
+        bool _depthOnly;
+        std::vector<cv::Point2f> _convertQPointsToCVPoints(std::vector<QPoint*> p);
 
         // QCheckBox *transformationsCheckBox;
 };

@@ -67,20 +67,19 @@ void MemoryCallibrationRenderArea::paintEvent(QPaintEvent * /* event */){
 
     if (_drawGridFlag){
         std::cout << "MemoryCallibrationRenderArea::paintEvent with draw grid\n";
-        painter.setBrush(QColor(255, 30, 30, 125));
-        painter.setPen(Qt::darkCyan);
+        painter.setBrush(QColor(30, 30, 30, 100));
+        painter.setPen(QColor(255, 0, 0, 255));
         _drawGrid(&painter);
     }
     else{
         std::cout << "MemoryCallibrationRenderArea::paintEvent with NO DRAW grid\n";
-    }
+        painter.setBrush(Qt::cyan);
+        painter.setPen(Qt::darkCyan);
 
-    painter.setBrush(Qt::cyan);
-    painter.setPen(Qt::darkCyan);
+        for (int i=0;i<_points.size();i++){
+            painter.drawEllipse(*_points[i],10,10);
 
-    for (int i=0;i<_points.size();i++){
-        painter.drawEllipse(*_points[i],10,10);
-
+        }
     }
     
     painter.restore();
