@@ -37,6 +37,24 @@ struct RGB {
     uchar red;  };
 
 
+enum MemoryGridCellType{MGC_TOP, MGC_BOTTOM, MGC_LEFT, MGC_RIGHT};
+class MemoryGridCell{
+public:
+    std::vector<QPoint> points;
+    MemoryGridCellType type;
+    int idx;
+    const QPoint * getAsQpoints(){
+        QPoint pointsarray[4] = {
+            points[0],
+            points[2],
+            points[3],
+            points[1],
+        };
+        return pointsarray;
+    }
+};
+
+
 class MemoryParamWindow : public KinectEventWindow, public MemoryCallibrationLabelDelegate{
     Q_OBJECT
     public:

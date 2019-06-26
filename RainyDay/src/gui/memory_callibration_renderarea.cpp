@@ -91,15 +91,6 @@ void MemoryCallibrationRenderArea::setGridPoints(std::vector<std::vector<QPoint*
     std::cout << "MemoryCallibrationRenderArea::setGridPoints\n";
 }
 
-// class GridCell{
-//     public:
-//         std::vector<Point> points;
-        
-
-//     private:
-// }
-
-
 void MemoryCallibrationRenderArea::_drawGrid(QPainter *painter){
 
     std::cout << "MemoryCallibrationRenderArea::_drawGrid  size : "<< _gridpoints.size();

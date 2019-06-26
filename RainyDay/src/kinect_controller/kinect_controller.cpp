@@ -113,7 +113,7 @@ int KinectController::startDevice(){
 		Mat depth_image = Mat(depth->height, depth->width, CV_32F, depth->data);
 		
 		delegate->kinectControllerReceivedImage(depth_image, image);
-		waitKey(1000);
+		waitKey(200);
 		framecount++;
 		listener.release(frames);
 		x++;
