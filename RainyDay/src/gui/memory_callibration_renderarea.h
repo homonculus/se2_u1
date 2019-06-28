@@ -6,6 +6,7 @@
 #include <QPixmap>
 #include <QWidget>
 #include <vector>
+#include "memory_grid_cell_manager.h"
 
 class MemoryCallibrationRenderArea : public QWidget
 {
@@ -16,8 +17,7 @@ public:
     QSize minimumSizeHint() const override;
     QSize sizeHint() const override;
     void updatePoints(std::vector<QPoint*> points);
-    void setGridPoints(std::vector<std::vector<QPoint*> > points);
-
+    void setGridCells(std::vector<MemoryGridCell*> points);
     std::vector<std::vector<QPoint*> > getGridPoints(){return _gridpoints;};
 
 protected:
@@ -34,6 +34,8 @@ private:
     std::vector<QPoint*> _points;
     int _drawGridFlag;
     std::vector<std::vector<QPoint*> > _gridpoints;
+    std::vector<MemoryGridCell*> _gridcells;
+
 };
 
 #endif // MEMORYCALLIBRATIONRENDERAREA_H

@@ -4,8 +4,8 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 find_package(Qt5 COMPONENTS REQUIRED Core Gui Widgets)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
-set(project_sources grid.cpp memory_game_window.cpp kinect_worker.cpp memory_param_window.cpp kinect_event_window.cpp memory_callibration_label.cpp memory_callibration_renderarea.cpp)
-set(project_headers grid.h memory_game_window.h kinect_worker.h memory_param_window.h kinect_event.h kinect_event_window.h memory_callibration_label.h memory_callibration_renderarea.h)
+set(project_sources grid.cpp memory_game_window.cpp kinect_worker.cpp memory_param_window.cpp kinect_event_window.cpp memory_callibration_label.cpp memory_callibration_renderarea.cpp memory_grid_cell_manager.cpp)
+set(project_headers grid.h memory_game_window.h kinect_worker.h memory_param_window.h kinect_event.h kinect_event_window.h memory_callibration_label.h memory_callibration_renderarea.h memory_grid_cell_manager.h)
 
 # wrap the ui file to a c++ header
 qt5_wrap_cpp(moc_sources ${project_headers})

@@ -41,7 +41,6 @@ void MemoryCallibrationRenderArea::_setBrush(const QBrush &brush){
 
 void MemoryCallibrationRenderArea::updatePoints(std::vector<QPoint*> points){
     _points = points;
-    std::cout << "UPDATING UPOINTS!!!\n";
     update();
 }
 
@@ -66,13 +65,11 @@ void MemoryCallibrationRenderArea::paintEvent(QPaintEvent * /* event */){
     painter.drawPolygon(points, 4);
 
     if (_drawGridFlag){
-        std::cout << "MemoryCallibrationRenderArea::paintEvent with draw grid\n";
         painter.setBrush(QColor(30, 30, 30, 100));
         painter.setPen(QColor(255, 0, 0, 255));
         _drawGrid(&painter);
     }
     else{
-        std::cout << "MemoryCallibrationRenderArea::paintEvent with NO DRAW grid\n";
         painter.setBrush(Qt::cyan);
         painter.setPen(Qt::darkCyan);
 
@@ -85,26 +82,32 @@ void MemoryCallibrationRenderArea::paintEvent(QPaintEvent * /* event */){
     painter.restore();
 }
 
-void MemoryCallibrationRenderArea::setGridPoints(std::vector<std::vector<QPoint*> > points){
+void MemoryCallibrationRenderArea::setGridCells(std::vector<MemoryGridCell*> points){
     _drawGridFlag = true;
-    _gridpoints = points;
-    std::cout << "MemoryCallibrationRenderArea::setGridPoints\n";
+    _gridcells = points;
 }
 
 void MemoryCallibrationRenderArea::_drawGrid(QPainter *painter){
 
-    std::cout << "MemoryCallibrationRenderArea::_drawGrid  size : "<< _gridpoints.size();
 
-    for (int i=0;i<_gridpoints.size();i++){
-        std::cout << "MemoryCallibrationRenderArea::_drawGrid 1\n";
+    for (int i=0;i<_gridcells.size();i++){
+        std::vector<QPoint> _p = _gridcells[i]->getPoint();
         QPoint points[4] = {
-            *_gridpoints[i][0],
-            *_gridpoints[i][2],
-            *_gridpoints[i][3],
-            *_gridpoints[i][1],
+            _p[0],
+            _p[2],
+            _p[3],
+            _p[1],
         };
 
-        std::cout << "MemoryCallibrationRenderArea::_drawGrid 2\n";
+        if (_gridcells[i]->activity == 0){
+            painter->setBrush(Qt::cyan);
+            painter->setPen(Qt::darkCyan);
+        }
+        else{
+            painter->setBrush(Qt::red);
+            painter->setPen(Qt::darkRed);
+        }
+
         painter->drawPolygon(points,4);
     }
 }

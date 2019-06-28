@@ -1,9 +1,8 @@
 #ifndef TeamController_H
 #define TeamController_H
 
-#include "grid_controller.h"
 #include "game.h"
-#include "memory_game_window.h"
+#include "memory_param_window.h"
 #include <vector>
 
 
@@ -21,13 +20,13 @@ class TeamControllerDelegate{
 };
 
 
-class TeamController{
+class TeamController: public MemoryParamWindowDelegate{
 	public:
 		TeamController(GridInfo* dimensions);
 		TeamControllerDelegate* delegate;
 		void start();
-		void MemoryGameWindowDidChange(int e);
-		
+		void MemoryParamWindowDidChange(int e);
+
 	private:
 		GridInfo* _dimensions;
 };

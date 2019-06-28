@@ -13,11 +13,6 @@ class QLabel;
 QT_END_NAMESPACE
 
 
-class MemoryGameWindowDelegate{
-public:
-	virtual void MemoryGameWindowDidChange(int e) = 0;
-	virtual void MemoryGameWindowTimerFired() = 0;
-};
 
 //! [0]
 class MemoryGameWindow : public KinectEventWindow{
@@ -27,7 +22,6 @@ public:
     MemoryGameWindow();
     void setTitle(std::string title);
     void setRenderArea(Grid* ra);
-	MemoryGameWindowDelegate* delegate;
 	void handleMyCustomEvent(const KinectEvent *event);
 	// void postMyCustomEvent(const int customData1, const int customData2);
 	// void handleMyCustomEvent(const KinectEvent *event);

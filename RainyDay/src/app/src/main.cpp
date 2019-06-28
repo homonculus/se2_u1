@@ -1,6 +1,5 @@
 #include <QApplication>
 #include "game.h"
-#include "grid_controller.h"
 #include "memory_controller.h"
 #include <iostream>
 

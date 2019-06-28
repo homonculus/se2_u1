@@ -7,6 +7,7 @@
 #include <QtGui>
 #include "memory_callibration_label.h"
 #include "memory_callibration_renderarea.h"
+#include "memory_grid_cell_manager.h"
 
 QT_BEGIN_NAMESPACE
 class QLabel;
@@ -20,15 +21,15 @@ QT_END_NAMESPACE
 class MemoryCallibrationArea : public QWidget{
     Q_OBJECT
 
-public:
-    QSize minimumSizeHint() const override{
-    return QSize(100, 100);
-}
-    QSize sizeHint() const override{
-    return QSize(400, 200);
-}
-    
-private:
+    public:
+        QSize minimumSizeHint() const override{
+        return QSize(100, 100);
+    }
+        QSize sizeHint() const override{
+        return QSize(400, 200);
+    }
+        
+    private:
 };
 
 struct RGB {
@@ -36,24 +37,10 @@ struct RGB {
     uchar green;
     uchar red;  };
 
-
-enum MemoryGridCellType{MGC_TOP, MGC_BOTTOM, MGC_LEFT, MGC_RIGHT};
-class MemoryGridCell{
+class MemoryParamWindowDelegate{
 public:
-    std::vector<QPoint> points;
-    MemoryGridCellType type;
-    int idx;
-    const QPoint * getAsQpoints(){
-        QPoint pointsarray[4] = {
-            points[0],
-            points[2],
-            points[3],
-            points[1],
-        };
-        return pointsarray;
-    }
+    virtual void MemoryParamWindowDidChange(int e) = 0;
 };
-
 
 class MemoryParamWindow : public KinectEventWindow, public MemoryCallibrationLabelDelegate{
     Q_OBJECT
@@ -62,6 +49,7 @@ class MemoryParamWindow : public KinectEventWindow, public MemoryCallibrationLab
         void setCallibrationImage(cv::Mat registered, cv::Mat depth);
         void handleMyCustomEvent(const KinectEvent *event);
         void updateMemoryCallibrationLabelRects(int idx);
+        MemoryParamWindowDelegate* delegate;
 
     private slots:
         void rowChanged();
@@ -89,15 +77,17 @@ class MemoryParamWindow : public KinectEventWindow, public MemoryCallibrationLab
         MemoryCallibrationLabel *_callibrationLabel2;
         MemoryCallibrationRenderArea *_callibrationRenderArea1;
         MemoryCallibrationRenderArea *_callibrationRenderArea2;
+        MemoryGridCellManager *_gridCellManager;
         void _createDimensionsBox();
         void _createCallibrationBox();
         void _createControlBox();
         void _drawCallibrationPointsIn(cv::Mat);
         cv::Mat _thresholdImage(cv::Mat *mat);
         void _drawGridInCallibrationLabel();
+        void _createGridCells();
         bool _depthOnly;
         std::vector<cv::Point2f> _convertQPointsToCVPoints(std::vector<QPoint*> p);
-
+        bool _setBaselines;
         // QCheckBox *transformationsCheckBox;
 };
 

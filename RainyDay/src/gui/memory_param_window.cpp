@@ -10,6 +10,8 @@ MemoryParamWindow::MemoryParamWindow()
 {
     setWindowTitle(tr("Memory Parameters"));
 
+    std::cout << "MemoryParamWindow :: CREATING MEMORY GRID CELL MANAGER\n";
+    _gridCellManager = new MemoryGridCellManager;
     _createDimensionsBox();
     _createCallibrationBox();
     _createControlBox();
@@ -18,9 +20,12 @@ MemoryParamWindow::MemoryParamWindow()
     connect(_buttonStart, SIGNAL (released()),this, SLOT (handleStartButton()));
     connect(_buttonToggleDepth, SIGNAL(toggled(bool)), this, SLOT(_toggleDepthOnlyOrRegistered(bool)));
 
-
     QGridLayout *mainLayout = new QGridLayout;
-    // mainLayout->setColumnStretch(3, 1);
+    mainLayout->setColumnStretch(1, 1);
+    mainLayout->setColumnStretch(1, 0);
+    mainLayout->setColumnStretch(1, 2);
+    mainLayout->setColumnStretch(1, 3);
+
     mainLayout->addWidget(_dimensionsBox,0,0);// row column
     mainLayout->addWidget(_callibrationBox,1,0);
     mainLayout->addWidget(_buttonBox,0,1);
@@ -28,10 +33,13 @@ MemoryParamWindow::MemoryParamWindow()
 
     setLayout(mainLayout);
     _depthOnly = true;
+    _setBaselines = false;
 }
 
 void MemoryParamWindow::handleStartButton(){
     std::cout << "START BUTTON PRESSED!\n";
+    _setBaselines = true;
+
 }
 
 void MemoryParamWindow::_toggleDepthOnlyOrRegistered(bool on){
@@ -73,11 +81,11 @@ void MemoryParamWindow::_createDimensionsBox(){
     QGridLayout *layout = new QGridLayout;
     layout->addWidget(_rowLabel,0,0,Qt::AlignRight);// row column
     layout->addWidget(_rowComboBox,0,1);
-    layout->addWidget(_colLabel,0,2,Qt::AlignRight);
-    layout->addWidget(_colComboBox,0,3);
-    layout->addWidget(_buttonToggleDepthLabel,1,1,Qt::AlignRight);// row column
-    layout->addWidget(_buttonToggleDepth,1,0);
-    layout->addWidget(_buttonStart,3,0);
+    layout->addWidget(_colLabel,1,0,Qt::AlignRight);
+    layout->addWidget(_colComboBox,1,1);
+    layout->addWidget(_buttonToggleDepthLabel,0,3,Qt::AlignLeft);// row column
+    layout->addWidget(_buttonToggleDepth,0,2,Qt::AlignRight);
+    layout->addWidget(_buttonStart,1,3);
 
     _dimensionsBox->setLayout(layout);
 }
@@ -114,6 +122,7 @@ void MemoryParamWindow::_createCallibrationBox(){
     // layout->setColumnStretch(1, 10);
 
     _callibrationBox->setLayout(layout);
+    _createGridCells();
     _drawGridInCallibrationLabel();
 }
 
@@ -127,6 +136,13 @@ void MemoryParamWindow::_createControlBox(){
     // layout->addWidget(_buttonStop,0,1);
     // // layout->setColumnStretch(1, 10);
     // _buttonBox->setLayout(layout);
+}
+
+void MemoryParamWindow::_createGridCells(){
+    int nrows = _rowComboBox->itemData(_rowComboBox->currentIndex(), IdRole).toInt() +2;
+    int ncols = _colComboBox->itemData(_colComboBox->currentIndex(), IdRole).toInt() +2;
+    _gridCellManager->createGridCells(nrows, nrows);
+
 }
 
 
@@ -149,6 +165,16 @@ void MemoryParamWindow::setCallibrationImage(cv::Mat registered, cv::Mat depth){
         QPixmap pix2 = QPixmap::fromImage(QImage((unsigned char*) warped_reg.data, warped_reg.cols, warped_reg.rows, QImage::Format_RGB32));
         _callibrationLabel2->setPixmap(pix2);
     }
+
+
+    if (_setBaselines){
+        _gridCellManager->setBaselines(&depth);
+        _setBaselines = false;
+    }
+    else{
+        _gridCellManager->setAverageDepths(&depth);
+        _drawGridInCallibrationLabel();
+    }
 }
 
 std::vector<cv::Point2f> MemoryParamWindow::_convertQPointsToCVPoints(std::vector<QPoint*> p){
@@ -160,80 +186,21 @@ std::vector<cv::Point2f> MemoryParamWindow::_convertQPointsToCVPoints(std::vecto
 }
 void MemoryParamWindow::rowChanged(){
     std::cout << "ROW CHANGED : " << _rowComboBox->itemData(_rowComboBox->currentIndex(), IdRole).toInt() << "\n";
+    _createGridCells();
     _drawGridInCallibrationLabel();
 }
 
 void MemoryParamWindow::colChanged(){
     std::cout << "ROW CHANGED : " << _rowComboBox->itemData(_rowComboBox->currentIndex(), IdRole).toInt() << "\n";
+    _createGridCells();
     _drawGridInCallibrationLabel();
 }
 
 void MemoryParamWindow::_drawGridInCallibrationLabel(){
-
-    std::vector<std::vector<QPoint*> > gridpoints;
-    std::cout << "MemoryParamWindow::_drawGridInCallibrationLabel \n";
-
     int nrows = _rowComboBox->itemData(_rowComboBox->currentIndex(), IdRole).toInt() +2;
     int ncols = _colComboBox->itemData(_colComboBox->currentIndex(), IdRole).toInt() +2;
-
-    std::cout << "MemoryParamWindow::_drawGridInCallibrationLabel nrwos : " << nrows << "\n";
-    std::cout << "MemoryParamWindow::_drawGridInCallibrationLabel nrwos : " << ncols << "\n";
-
-    int margin = 100;
-    int total_w = 512;
-    int total_h = 424;
-    int cell_h = round((total_h - 2*margin)/nrows);
-    int cell_w = round((total_w - 2*margin)/ncols);
-    // make left right grid
-
-
-    std::cout << "MemoryParamWindow::_drawGridInCallibrationLabel 1\n";
-
-    
-
-    for (int r=0;r<nrows;r++){
-        std::cout << "MemoryParamWindow::_drawGridInCallibrationLabel 2\n";
-        std::vector<QPoint *> gpoints_left;
-        std::vector<QPoint *> gpoints_right;
-        int top = r*cell_h + margin;
-        int bottom = top + cell_h;
-        gpoints_left.push_back(new QPoint(0,top));
-        gpoints_left.push_back(new QPoint(margin,top));
-        gpoints_left.push_back(new QPoint(0,bottom));
-        gpoints_left.push_back(new QPoint(margin,bottom));
-
-        gpoints_right.push_back(new QPoint(total_w-margin,top));
-        gpoints_right.push_back(new QPoint(total_w,top));
-        gpoints_right.push_back(new QPoint(total_w-margin,bottom));
-        gpoints_right.push_back(new QPoint(total_w,bottom));
-
-        gridpoints.push_back(gpoints_left);
-        gridpoints.push_back(gpoints_right);
-    }
-    std::cout << "MemoryParamWindow::_drawGridInCallibrationLabel 3\n";
-
-    for (int c=0;c<ncols;c++){
-
-        std::vector<QPoint *> gpoints_top;
-        std::vector<QPoint *> gpoints_bottom;
-        int left = c*cell_w + margin;
-        int right = left + cell_w;
-        std::cout << "MemoryParamWindow::_drawGridInCallibrationLabel 4 with c : " << left << "\n";
-
-        gpoints_top.push_back(new QPoint(left,0));//top left
-        gpoints_top.push_back(new QPoint(right,0));// top right
-        gpoints_top.push_back(new QPoint(left,margin));//bottom left
-        gpoints_top.push_back(new QPoint(right,margin));//bottom right
-
-        gpoints_bottom.push_back(new QPoint(left,total_h-margin));//top left
-        gpoints_bottom.push_back(new QPoint(right,total_h-margin));// top right
-        gpoints_bottom.push_back(new QPoint(left,total_h));//bottom left
-        gpoints_bottom.push_back(new QPoint(right,total_h));//bottom right
-        gridpoints.push_back(gpoints_top);
-        gridpoints.push_back(gpoints_bottom);
-    }
     std::cout << "MemoryParamWindow::_drawGridInCallibrationLabel 5\n";
-    _callibrationRenderArea2->setGridPoints(gridpoints);
+    _callibrationRenderArea2->setGridCells(_gridCellManager->getGridCells());
     std::cout << "MemoryParamWindow::_drawGridInCallibrationLabel 6\n";
 }
 
@@ -251,62 +218,17 @@ void MemoryParamWindow::updateMemoryCallibrationLabelRects(int idx){
 
 cv::Mat MemoryParamWindow::_thresholdImage(cv::Mat *mat){
     cv::Size s = mat->size();
-    // int r = 10;
     float t1 = 4500/3;
     float t2 = (4500*2)/3;
-    // int e_x = std::min(p_x + r, s.width);
-    // int s_y = std::max(p_y - r, 0);
-    // int e_y = std::min(p_y + r, s.height);
-    // std::cout << *mat << "\n";
-    cv::Vec3b color;
-    // std::cout << "MemoryParamWindow :: _thresholdImage " << mat->type() << "\n";
+    cv::Vec4b color;
+    color[3] = 255;
     float val;
-    // std::cout << *mat << "\n";
-    std::vector<std::vector<QPoint*> > points = _callibrationRenderArea2->getGridPoints();
-
-
+    // std::vector<std::vector<QPoint*> > points = _callibrationRenderArea2->getGridPoints();
     cv::Mat img = cv::Mat(s.height, s.width, CV_8UC4);
-
     std::vector<bool> active;
     for (int x=0;x<s.width;x++){
         for (int y=0;y<s.height;y++){
             val = mat->at<float>(cv::Point(x,y));
-
-            // // find if x,y is within a grid controller
-            // int _m = 100;
-            // bool sides = (y > _m) && (y < (s.height - _m));
-            // bool tb = (x > _m) && (x < (s.width - _m));
-            // bool left = (x < _m) && sides;
-            // bool right = (x > (s.width-_m)) && sides;
-            // bool top = (y < _m) && tb;
-            // bool bottom = (y > (s.height-_m)) && tb;
-
-            // int top_left = 0;
-            // int top_right = 1;
-            // int bottom_left = 2;
-            // int bottom_right = 3;
-
-            // if (left){
-            //     for (int i = 0;i<points.size();i++){
-            //         // now how are indexes saved?
-            //         if ((y > points[i][top_left]->y()) && (y<points[i][bottom_left]->y())){
-
-            //         }
-            //     }
-
-            // }
-            // else if (right){
-
-            // }
-            // else if (top){
-
-            // }
-            // else if (bottom){
-
-            // }
-    
-
-        
             if (val < t1){
                 color[0] = 0;
                 color[1] = 0;
@@ -322,15 +244,7 @@ cv::Mat MemoryParamWindow::_thresholdImage(cv::Mat *mat){
                 color[1] = 100;
                 color[2] = 100;
             }
-            img.at<cv::Vec3b>(cv::Point(x,y)) = color;
-
-            // mat
-            // color = mat->at<cv::Vec3b>(cv::Point(x,y));
-            // print(color);
-            // color[0] = 255;
-            // color[1] = 255;
-            // color[2] = 255;
-            // mat.at<cv::Vec3b>(cv::Point(x,y)) = color;
+            img.at<cv::Vec4b>(cv::Point(x,y)) = color;
         }
     }
     return img;

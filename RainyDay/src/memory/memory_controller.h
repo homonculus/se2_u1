@@ -9,7 +9,7 @@
 #include "memory_game_window.h"
 #include "memory_param_window.h"
 
-class MemoryController: public TeamControllerDelegate, public MemoryGameWindowDelegate{
+class MemoryController: public TeamControllerDelegate{
 	public:
 		std::string path_content;
 		bool testing;
@@ -22,8 +22,6 @@ class MemoryController: public TeamControllerDelegate, public MemoryGameWindowDe
 		void endGame();
 		bool gameIsOver();
 		void showWindow();
-		void MemoryGameWindowDidChange(int e);
-		void MemoryGameWindowTimerFired();
 		MemoryGameWindow* getGameWindow(){ return _gameWindow; };
 		MemoryParamWindow* getParamWindow(){ return _paramWindow; };
 		MemoryGameEventFlags getGameStatusFlag(){return _model->getGameStatusFlag();};

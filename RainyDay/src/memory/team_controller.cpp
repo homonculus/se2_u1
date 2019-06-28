@@ -14,3 +14,7 @@ TeamController::TeamController(GridInfo* dimensions){
 
 void TeamController::start(){
 }
+
+void TeamController::MemoryParamWindowDidChange(int e){
+	std::cout << "TeamController::MemoryParamWindowDidChange : " << e << "\n";
+}

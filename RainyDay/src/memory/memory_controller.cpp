@@ -39,12 +39,12 @@ void MemoryController::_setupInput(){
 void MemoryController::_setupParamWindow(){
 	// must be before setupInput
 	_paramWindow = new MemoryParamWindow();
+	_paramWindow->delegate = _input;
 }
 
 void MemoryController::_setupGameWindow(){
 	// must be before setupInput
 	_gameWindow = new MemoryGameWindow();
-	_gameWindow->delegate = (MemoryGameWindowDelegate*)this; // timer events go directly to team controller
 	_gameWindow->setRenderArea(_view->getGrid());
 	_gameWindow->setTitle("Memory");
 }
@@ -95,15 +95,6 @@ void MemoryController::showWindow(){
 	_gameWindow->show();
 }
 
-
-void MemoryController::MemoryGameWindowDidChange(int e){
-	std::cout << "MemoryController::MemoryGameWindowDidChange : " << e << "\n";
-}
-
-void MemoryController::MemoryGameWindowTimerFired(){
-	std::cout << "MemoryController::MemoryGameWindowTimerFired : \n";
-	// _paramWindow->setCallibrationImage(image->data, image->width, image->height);
-}
 
 void MemoryController::_keyboardInputOccurred(int e){
 	// can be removed, don't want keyboard commands
