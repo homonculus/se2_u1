@@ -39,7 +39,9 @@ struct RGB {
 
 class MemoryParamWindowDelegate{
 public:
-    virtual void MemoryParamWindowDidChange(int e) = 0;
+    virtual void MemoryParamWindow_inputChanged(std::vector<int> idxActivityBySide) = 0;
+    virtual void MemoryParamWindow_startGame(int nrows, int ncols) = 0;
+    virtual void MemoryParamWindow_endGame(int e) = 0;
 };
 
 class MemoryParamWindow : public KinectEventWindow, public MemoryCallibrationLabelDelegate{

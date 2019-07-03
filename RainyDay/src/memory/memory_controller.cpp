@@ -39,7 +39,7 @@ void MemoryController::_setupInput(){
 void MemoryController::_setupParamWindow(){
 	// must be before setupInput
 	_paramWindow = new MemoryParamWindow();
-	_paramWindow->delegate = _input;
+	_paramWindow->delegate = this;
 }
 
 void MemoryController::_setupGameWindow(){
@@ -67,6 +67,19 @@ void MemoryController::teamControllerDidChange(TeamControllerEventInfo e){
 		_view->refreshCellSelections();
 	}
 }
+
+void MemoryParamWindow_inputChanged(std::vector<int> idxActivityBySide){
+
+}
+
+void MemoryParamWindow_startGame(int nrows, int ncols){
+
+}
+
+void MemoryParamWindow_endGame(int e){
+
+}
+
 
 void MemoryController::cardSelected(int i){
 	if (_model->validGameEvent(i)){

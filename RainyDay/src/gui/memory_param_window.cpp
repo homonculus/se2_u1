@@ -174,6 +174,7 @@ void MemoryParamWindow::setCallibrationImage(cv::Mat registered, cv::Mat depth){
     else{
         _gridCellManager->setActivities(&depth);
         _drawGridInCallibrationLabel();
+        delegate->MemoryParamWindow_inputChanged(_idxActivityBySide);
     }
 }
 

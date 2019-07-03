@@ -92,8 +92,8 @@ void MemoryGridCellManager::setBaselines(cv::Mat *depth){
 
 void MemoryGridCellManager::setActivities(cv::Mat *depth){
     _calcAverageDepthForEachGridCell(depth);
-    std::vector<int> idxMaxActivityBySide = _findIdxsMaxActivityForEachSide();
-    _setSingleSelectionForEachSide(idxMaxActivityBySide);
+    _findIdxsMaxActivityForEachSide();
+    _setSingleSelectionForEachSide();
 }
 
 void MemoryGridCellManager::_calcAverageDepthForEachGridCell(cv::Mat *depth){
@@ -111,7 +111,7 @@ void MemoryGridCellManager::_calcAverageDepthForEachGridCell(cv::Mat *depth){
 
 }
 
-std::vector<int> MemoryGridCellManager::_findIdxsMaxActivityForEachSide(){
+void MemoryGridCellManager::_findIdxsMaxActivityForEachSide(){
     // two parallel vectors corresponding to MGC_TOP, MGC_BOTTOM, MGC_LEFT, MGC_RIGHT
     // find cell with max value for that side and store it's idx in gridcells
     std::vector<float> maxs(4,0);
@@ -126,13 +126,13 @@ std::vector<int> MemoryGridCellManager::_findIdxsMaxActivityForEachSide(){
             }
         }
     }
-    return idxs_maxs;
+    _idxActivityBySide = idxs_maxs;
 }
 
-void MemoryGridCellManager::_setSingleSelectionForEachSide(std::vector<int> idxMaxActivityBySide){
-    for (int i=0;i<idxMaxActivityBySide.size();i++){
-        if (idxMaxActivityBySide[i] >= 0){
-            (*gridcells)[idxMaxActivityBySide[i]]->setSelected();
+void MemoryGridCellManager::_setSingleSelectionForEachSide(){
+    for (int i=0;i<_idxActivityBySide.size();i++){
+        if (_idxActivityBySide[i] >= 0){
+            (*gridcells)[_idxActivityBySide[i]]->setSelected();
         }
     }
 }
