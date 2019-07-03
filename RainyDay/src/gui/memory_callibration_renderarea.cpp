@@ -99,11 +99,15 @@ void MemoryCallibrationRenderArea::_drawGrid(QPainter *painter){
             _p[1],
         };
 
-        if (_gridcells[i]->activity == 0){
+        if (_gridcells[i]->activity == MGC_INACTIVE){
+            painter->setBrush(Qt::white);
+            painter->setPen(Qt::darkGray);
+        }
+        else if (_gridcells[i]->activity == MGC_ACTIVE){
             painter->setBrush(Qt::cyan);
             painter->setPen(Qt::darkCyan);
         }
-        else{
+        else if (_gridcells[i]->activity == MGC_SINGLESELECTION){
             painter->setBrush(Qt::red);
             painter->setPen(Qt::darkRed);
         }

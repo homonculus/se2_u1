@@ -84,13 +84,19 @@ void MemoryGridCellManager::checkIfPointInGridCell(int x, int y, int size_w, int
 }
 
 void MemoryGridCellManager::setBaselines(cv::Mat *depth){
-	setAverageDepths(depth);
+	_calcAverageDepthForEachGridCell(depth);
 	for (int i=0;i<gridcells->size();i++){
 		(*gridcells)[i]->setBaseline((*gridcells)[i]->average);
 	}
 }
 
-void MemoryGridCellManager::setAverageDepths(cv::Mat *depth){
+void MemoryGridCellManager::setActivities(cv::Mat *depth){
+    _calcAverageDepthForEachGridCell(depth);
+    std::vector<int> idxMaxActivityBySide = _findIdxsMaxActivityForEachSide();
+    _setSingleSelectionForEachSide(idxMaxActivityBySide);
+}
+
+void MemoryGridCellManager::_calcAverageDepthForEachGridCell(cv::Mat *depth){
 	MemoryGridCell cell = *(*gridcells)[0];
 	float n = (cell.getTopRight().x() - cell.getTopLeft().x() ) * (cell.getBottomLeft().y() - cell.getTopLeft().y());
 	for (int i=0;i<gridcells->size();i++){
@@ -102,4 +108,31 @@ void MemoryGridCellManager::setAverageDepths(cv::Mat *depth){
 		(*gridcells)[i]->average /= n;
 		(*gridcells)[i]->setActivity();
 	}
+
+}
+
+std::vector<int> MemoryGridCellManager::_findIdxsMaxActivityForEachSide(){
+    // two parallel vectors corresponding to MGC_TOP, MGC_BOTTOM, MGC_LEFT, MGC_RIGHT
+    // find cell with max value for that side and store it's idx in gridcells
+    std::vector<float> maxs(4,0);
+    std::vector<int> idxs_maxs(4,-1);
+    for (int i=0;i<gridcells->size();i++){
+        if ((*gridcells)[i]->activity != MGC_INACTIVE){
+            int idx_type = (*gridcells)[i]->type;
+            double val = (*gridcells)[i]->average;
+            if (val > maxs[idx_type]){
+                maxs[idx_type] = val;
+                idxs_maxs[idx_type] = i;
+            }
+        }
+    }
+    return idxs_maxs;
+}
+
+void MemoryGridCellManager::_setSingleSelectionForEachSide(std::vector<int> idxMaxActivityBySide){
+    for (int i=0;i<idxMaxActivityBySide.size();i++){
+        if (idxMaxActivityBySide[i] >= 0){
+            (*gridcells)[idxMaxActivityBySide[i]]->setSelected();
+        }
+    }
 }

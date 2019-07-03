@@ -172,7 +172,7 @@ void MemoryParamWindow::setCallibrationImage(cv::Mat registered, cv::Mat depth){
         _setBaselines = false;
     }
     else{
-        _gridCellManager->setAverageDepths(&depth);
+        _gridCellManager->setActivities(&depth);
         _drawGridInCallibrationLabel();
     }
 }
