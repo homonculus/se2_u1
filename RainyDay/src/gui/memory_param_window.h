@@ -38,10 +38,10 @@ struct RGB {
     uchar red;  };
 
 class MemoryParamWindowDelegate{
-public:
-    virtual void MemoryParamWindow_inputChanged(std::vector<int> idxActivityBySide) = 0;
-    virtual void MemoryParamWindow_startGame(int nrows, int ncols) = 0;
-    virtual void MemoryParamWindow_endGame(int e) = 0;
+    public:
+        virtual void MemoryParamWindow_inputChanged(std::vector<int> idxActivityBySide) = 0;
+        virtual void MemoryParamWindow_startGame(int nrows, int ncols) = 0;
+        virtual void MemoryParamWindow_endGame(int e) = 0;
 };
 
 class MemoryParamWindow : public KinectEventWindow, public MemoryCallibrationLabelDelegate{
@@ -73,8 +73,6 @@ class MemoryParamWindow : public KinectEventWindow, public MemoryCallibrationLab
         QPushButton *_buttonStop;
         QRadioButton *_buttonToggleDepth;
         QLabel *_buttonToggleDepthLabel;
-
-
         MemoryCallibrationLabel *_callibrationLabel1;
         MemoryCallibrationLabel *_callibrationLabel2;
         MemoryCallibrationRenderArea *_callibrationRenderArea1;

@@ -174,7 +174,7 @@ void MemoryParamWindow::setCallibrationImage(cv::Mat registered, cv::Mat depth){
     else{
         _gridCellManager->setActivities(&depth);
         _drawGridInCallibrationLabel();
-        delegate->MemoryParamWindow_inputChanged(_idxActivityBySide);
+        delegate->MemoryParamWindow_inputChanged(_gridCellManager->getIdxActivityBySide());
     }
 }
 
@@ -192,7 +192,7 @@ void MemoryParamWindow::rowChanged(){
 }
 
 void MemoryParamWindow::colChanged(){
-    std::cout << "ROW CHANGED : " << _rowComboBox->itemData(_rowComboBox->currentIndex(), IdRole).toInt() << "\n";
+    std::cout << "ROW CHANGED : " << _colComboBox->itemData(_colComboBox->currentIndex(), IdRole).toInt() << "\n";
     _createGridCells();
     _drawGridInCallibrationLabel();
 }

@@ -64,3 +64,7 @@ void MemoryView::setSelectedRow(int r){
 void MemoryView::setSelectedColumn(int c){
 	_selectedCol = c;
 }
+
+void MemoryView::update(){
+	_grid->update();
+}

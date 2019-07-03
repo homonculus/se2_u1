@@ -127,6 +127,7 @@ void MemoryGridCellManager::_findIdxsMaxActivityForEachSide(){
         }
     }
     _idxActivityBySide = idxs_maxs;
+    std::cout << "MemoryGridCellManager::_findIdxsMaxActivityForEachSide :" << _idxActivityBySide[0] << " " << _idxActivityBySide[2] << "\n";
 }
 
 void MemoryGridCellManager::_setSingleSelectionForEachSide(){

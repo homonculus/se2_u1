@@ -67,7 +67,18 @@ class MemoryGridCellManager{
         void checkIfPointInGridCell(int x, int y, int size_w, int size_h, int size_margin);
         void setBaselines(cv::Mat *depth);
         void setActivities(cv::Mat *depth);
-        void getIdxActivityBySide(){return _idxActivityBySide;};
+        std::vector<int> getIdxActivityBySide(){ 
+            std::vector<int> idxs;
+            for (int i=0;i<_idxActivityBySide.size();i++){
+                if (_idxActivityBySide[i] > -1){
+                    int gridcellidx = (*gridcells)[_idxActivityBySide[i]]->idx;
+                    idxs.push_back(gridcellidx);
+                }
+                else{
+                    idxs.push_back(-1);
+                }
+            }
+            return idxs;};
 
     private:
         void _calcAverageDepthForEachGridCell(cv::Mat *depth);

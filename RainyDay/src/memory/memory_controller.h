@@ -3,7 +3,7 @@
 
 #include "memory_model.h"
 #include "memory_view.h"
-#include "team_controller.h"
+// #include "team_controller.h"
 #include <string>
 #include <vector>
 #include "memory_game_window.h"
@@ -15,7 +15,7 @@ class MemoryController: public MemoryParamWindowDelegate{
 		bool testing;
 		void setContentPath(std::string path);
 		void setDimensions(GridInfo* dims);
-		void teamControllerDidChange(TeamControllerEventInfo e);
+		// void teamControllerDidChange(TeamControllerEventInfo e);
 		void cardSelected(int idx);
 		void setupGame();
 		void startGame();
@@ -26,7 +26,7 @@ class MemoryController: public MemoryParamWindowDelegate{
 		MemoryParamWindow* getParamWindow(){ return _paramWindow; };
 		MemoryGameEventFlags getGameStatusFlag(){return _model->getGameStatusFlag();};
 		MemoryInfo* getGameInfo(){return _model->getGameInfo();};
-		void MemoryParamWindow_inputChanged(std::vector<int> idxActivityBySide);
+        void MemoryParamWindow_inputChanged(std::vector<int> idxActivityBySide);
 		void MemoryParamWindow_startGame(int nrows, int ncols);
 		void MemoryParamWindow_endGame(int e);
 
@@ -34,8 +34,8 @@ class MemoryController: public MemoryParamWindowDelegate{
 		GridInfo* _dimensions;
 		MemoryModel* _model;
 		MemoryView* _view;
-		TeamController* _input;
-		std::vector<int> _keyboardInput;
+		// TeamController* _input;
+		// std::vector<int> _keyboardInput;
 		MemoryParamWindow* _paramWindow;
 		MemoryGameWindow* _gameWindow;
 		void _setupModel();
@@ -43,7 +43,8 @@ class MemoryController: public MemoryParamWindowDelegate{
 		void _setupInput();
 		void _setupParamWindow();
 		void _setupGameWindow();
-		void _keyboardInputOccurred(int e);
+		// void _keyboardInputOccurred(int e);
+		bool _gameStarted;
 };
 
 #endif // MEMORYCONTROLLER_H

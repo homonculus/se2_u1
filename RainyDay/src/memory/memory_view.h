@@ -11,6 +11,7 @@ class MemoryView{
 		void refreshCellSelections();
 		void setSelectedColumn(int c);
 		void setSelectedRow(int r);
+		void update();
 		Grid* getGrid() { return _grid; }
 		
 	private:
